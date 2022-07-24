@@ -1,2 +1,5 @@
+# This file should be used to override local configuration values when installing the Helm chart
+# See README.md for more information
+
 image:
     registryToken:
