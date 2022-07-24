@@ -55,7 +55,7 @@ spec:
             - name: KAFKA_SERVICE_NAME
               value: {{ .Values.service.kafka.name | quote }}
             - name: KAFKA_PORT
-              value: {{ .Values.service.kafka.port | quote }}
+              value: {{ .Values.service.kafka.port1 | quote }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
