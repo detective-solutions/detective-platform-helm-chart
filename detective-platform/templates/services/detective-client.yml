@@ -23,6 +23,7 @@ spec:
       {{- end }}
       labels:
         app: {{ $deploymentName }}
+        {{- include "detective-platform.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -70,4 +71,3 @@ spec:
   type: {{ .Values.service.detectiveClient.type }}
   selector:
     app: {{ $deploymentName }}
-    {{- include "detective-platform.selectorLabels" . | nindent 4 }}

@@ -23,6 +23,7 @@ spec:
       {{- end }}
       labels:
         app: {{ $deploymentName }}
+        {{- include "detective-platform.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -52,9 +53,9 @@ spec:
                   name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
             - name: KAFKA_SERVICE_NAME
-              value: {{ .Values.service.kafka.name }}
+              value: {{ .Values.service.kafka.name | quote }}
             - name: KAFKA_PORT
-              value: {{ .Values.service.kafka.port }}
+              value: {{ .Values.service.kafka.port | quote }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -85,4 +86,3 @@ spec:
   type: {{ .Values.service.websocketGateway.type }}
   selector:
     app: {{ $deploymentName }}
-    {{- include "detective-platform.selectorLabels" . | nindent 4 }}
