@@ -57,6 +57,11 @@ service:
     port1: 9092
     port2: 9093
     type: ClusterIP
+  kafdrop:
+    name: kafdrop-service
+    port: 9000
+    type: ClusterIP
+    ingressPath: /kafdrop
 
 nameOverride: ""
 fullnameOverride: ""

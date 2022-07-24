@@ -1,0 +1,45 @@
+{{- $containerPort := "9000" -}}
+{{- $deploymentName := "kafdrop" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{$deploymentName }}
+    spec:
+      containers:
+        - name: {{ $deploymentName }}
+          image: obsidiandynamics/kafdrop:latest
+          ports:
+            - containerPort: {{ $containerPort }}
+          env:
+            - name: KAFKA_BROKERCONNECT
+              value: {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1}}
+            - name: SERVER_SERVLET_CONTEXTPATH
+              value: "/kafdrop"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.kafdrop.name }}
+  labels:
+    app: {{ .Values.service.kafdrop.name }}
+    {{- include "detective-platform.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .Values.service.kafdrop.port }}
+      targetPort: {{ $containerPort }}
+      protocol: TCP
+  selector:
+    app: kafdrop
+    {{- include "detective-platform.selectorLabels" . | nindent 4 }}
