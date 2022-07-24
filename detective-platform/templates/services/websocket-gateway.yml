@@ -52,9 +52,9 @@ spec:
                   name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
             - name: KAFKA_SERVICE_NAME
-              value: {{ .Values.kafka.name }}
+              value: {{ .Values.service.kafka.name }}
             - name: KAFKA_PORT
-              value: {{ .Values.kafka.port }}
+              value: {{ .Values.service.kafka.port }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -73,15 +73,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.websocketGateway.name }}
+  name: {{ .Values.service.websocketGateway.name }}
   labels:
-    app: {{ .Values.websocketGateway.name }}
+    app: {{ .Values.service.websocketGateway.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.websocketGateway.port }}
+    - port: {{ .Values.service.websocketGateway.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
+  type: {{ .Values.service.websocketGateway.type }}
   selector:
     app: {{ $deploymentName }}
     {{- include "detective-platform.selectorLabels" . | nindent 4 }}

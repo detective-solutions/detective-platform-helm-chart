@@ -26,23 +26,28 @@ image:
   websocketGateway:
     tag: 1.0.0-beta-DET-890
 
-# Service metadata
-detectiveClient:
-  name: detective-client-service
-  port: 80
-auth:
-  name: detective-auth-service
-  port: 1111
-websocketGateway:
-  name: detective-websocket-gateway-service
-  port: 7777
-dgraph:
-  name: dgraph-alpha-public
-  port: 9080
-kafka:
-  # TODO: Get correct dynamically created service name
-  name: detective-dev-kafka-cluster-kafka-bootstrap.kafka
-  port: 9092
+service:
+  detectiveClient:
+    name: detective-client-service
+    port: 80
+    type: ClusterIP
+  auth:
+    name: detective-auth-service
+    port: 1111
+    type: ClusterIP
+  websocketGateway:
+    name: detective-websocket-gateway-service
+    port: 7777
+    type: ClusterIP
+  dgraph:
+    name: dgraph-alpha-public
+    port: 9080
+    type: ClusterIP
+  kafka:
+    # TODO: Get correct dynamically created service name
+    name: detective-dev-kafka-cluster-kafka-bootstrap.kafka
+    port: 9092
+    type: ClusterIP
 
 nameOverride: ""
 fullnameOverride: ""
@@ -68,10 +73,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
 
 ingress:
   enabled: true

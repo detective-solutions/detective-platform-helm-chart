@@ -49,12 +49,12 @@ spec:
             - name: REFRESH_TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: jwt-refresh-token-secret
+                  name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
             - name: DATABASE_GRPC_SERVICE_NAME
-              value: {{ .Values.dgraph.name }}
+              value: {{ .Values.service.dgraph.name }}
             - name: DATABASE_GRPC_PORT
-              value: {{ .Values.dgraph.port }}
+              value: {{ .Values.service.dgraph.port }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -73,15 +73,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.auth.name }}
+  name: {{ .Values.service.auth.name }}
   labels:
-    app: {{ .Values.auth.name }}
+    app: {{ .Values.service.auth.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.auth.port }}
+    - port: {{ .Values.service.auth.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
+  type: {{ .Values.service.auth.type }}
   selector:
     app: {{ $deploymentName }}
     {{- include "detective-platform.selectorLabels" . | nindent 4 }}

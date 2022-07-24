@@ -58,15 +58,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.detectiveClient.name }}
+  name: {{ .Values.service.detectiveClient.name }}
   labels:
-    app: {{ .Values.detectiveClient.name }}
+    app: {{ .Values.service.detectiveClient.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.detectiveClient.port }}
+    - port: {{ .Values.service.detectiveClient.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
+  type: {{ .Values.service.detectiveClient.type }}
   selector:
     app: {{ $deploymentName }}
     {{- include "detective-platform.selectorLabels" . | nindent 4 }}
