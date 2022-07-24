@@ -51,10 +51,10 @@ spec:
                 secretKeyRef:
                   name: jwt-refresh-token-secret
                   key: jwk
-            - name: DATABASE_GRPC_SERVICE_NAME
-              value: {{ .Values.dgraph.name }}
-            - name: DATABASE_GRPC_PORT
-              value: {{ .Values.dgraph.port }}
+            - name: KAFKA_SERVICE_NAME
+              value: {{ .Values.kafka.name }}
+            - name: KAFKA_PORT
+              value: {{ .Values.kafka.port }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

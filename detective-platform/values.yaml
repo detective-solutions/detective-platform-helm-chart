@@ -31,6 +31,10 @@ websocketGateway:
 dgraph:
   name: dgraph-alpha-public
   port: 9080
+kafka:
+  # TODO: Get correct dynamically created service name
+  name: detective-dev-kafka-cluster-kafka-bootstrap.kafka
+  port: 9092
 
 nameOverride: ""
 fullnameOverride: ""
