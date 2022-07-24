@@ -1,0 +1,87 @@
+{{- $containerPort := "7777" -}}
+{{- $deploymentName := "detective-platform-websocket-gateway" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+  labels:
+    {{- include "detective-platform.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: 1
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ $deploymentName }}
+      {{- include "detective-platform.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ $deploymentName }}
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "detective-platform.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $deploymentName }}
+          image: {{ .Values.image.repository }}/websocket-gateway:{{ .Values.image.websocketGateway.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - containerPort: {{ $containerPort }}
+              protocol: TCP
+          env:
+            - name: ACCESS_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-refresh-token-secret
+                  key: jwk
+            - name: REFRESH_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-refresh-token-secret
+                  key: jwk
+            - name: DATABASE_GRPC_SERVICE_NAME
+              value: {{ .Values.dgraph.name }}
+            - name: DATABASE_GRPC_PORT
+              value: {{ .Values.dgraph.port }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.websocketGateway.name }}
+  labels:
+    app: {{ .Values.websocketGateway.name }}
+    {{- include "detective-platform.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .Values.websocketGateway.port }}
+      targetPort: {{ $containerPort }}
+      protocol: TCP
+  selector:
+    app: {{ $deploymentName }}
+    {{- include "detective-platform.selectorLabels" . | nindent 4 }}

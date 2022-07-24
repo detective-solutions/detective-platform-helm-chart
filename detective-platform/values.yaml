@@ -13,14 +13,19 @@ image:
   # Overrides image tags whose default is the chart appVersion.
   auth:
     tag: 1.0.0-beta-DET-890
+  websocketGateway:
+    tag: 1.0.0-beta-DET-890
 
 # Service metadata
 auth:
-    name: detective-auth-service
-    port: 1111
+  name: detective-auth-service
+  port: 1111
+websocketGateway:
+  name: detective-websocket-gateway-service
+  port: 7777
 dgraph:
-    name: dgraph-alpha-public
-    port: 9080
+  name: dgraph-alpha-public
+  port: 9080
 
 nameOverride: ""
 fullnameOverride: ""
