@@ -11,12 +11,17 @@ image:
   repository: quay.io/detective.solutions
   pullPolicy: IfNotPresent
   # Overrides image tags whose default is the chart appVersion.
+  detectiveClient:
+    tag: 1.0.0-beta-DET-890
   auth:
     tag: 1.0.0-beta-DET-890
   websocketGateway:
     tag: 1.0.0-beta-DET-890
 
 # Service metadata
+detectiveClient:
+  name: detective-client-service
+  port: 80
 auth:
   name: detective-auth-service
   port: 1111
