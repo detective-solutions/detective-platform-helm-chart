@@ -44,12 +44,12 @@ spec:
             - name: ACCESS_TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: jwt-refresh-token-secret
+                  name: {{ .Values.auth.jwtAccessTokenSecretName }}
                   key: jwk
             - name: REFRESH_TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: jwt-refresh-token-secret
+                  name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
             - name: KAFKA_SERVICE_NAME
               value: {{ .Values.kafka.name }}

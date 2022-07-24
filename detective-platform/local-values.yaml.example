@@ -1,5 +1,12 @@
 # This file should be used to override local configuration values when installing the Helm chart
 # See README.md for more information
 
+auth:
+  # Go to https://randomkeygen.com
+  # Choose a 152-bit WEP key as access token secret
+  jwtAccessTokenSecretValue: U1RDVyx0WmdZakxpa0g4
+  # Choose a 256-bit WEP key as access token secret
+  jwtRefreshTokenSecretValue: X3lpZEwmVTxvQTBrPSYp
+
 image:
-    registryToken:
+  registryToken:
