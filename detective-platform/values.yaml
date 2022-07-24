@@ -11,8 +11,10 @@ image:
   auth:
     tag: 1.0.0-beta-DET-890
 
-imagePullSecrets: [docker-registry-crendentials]
+imagePullSecrets:
+  - name: docker-registry-credentials
 
+# Service metadata
 auth:
     name: detective-auth-service
     port: 1111
