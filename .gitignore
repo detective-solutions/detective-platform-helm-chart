@@ -1,1 +1,4 @@
 .vscode/
+local-values.yaml
+local-values.yml
+!*.example
