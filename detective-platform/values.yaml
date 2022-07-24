@@ -7,7 +7,7 @@ replicaCount: 2
 image:
   # MANDATORY: Registry token needs to be set when installing chart (via local-values.yaml or CLI)
   registryToken:
-  pullSecret: docker-registry-credentials
+  pullSecrets: [ name: docker-registry-credentials ]
   repository: quay.io/detective.solutions
   pullPolicy: IfNotPresent
   # Overrides image tags whose default is the chart appVersion.
