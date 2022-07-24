@@ -2,3 +2,6 @@
 local-values.yaml
 local-values.yml
 !*.example
+
+# System files
+.DS*
