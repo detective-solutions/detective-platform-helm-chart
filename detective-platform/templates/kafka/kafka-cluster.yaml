@@ -1,0 +1,34 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ .Values.service.kafka.name }}
+  namespace: kafka
+spec:
+  kafka:
+    version: 3.1.0
+    replicas: 3
+    listeners:
+      - name: plain
+        port: {{ .Values.service.kafka.port1 }}
+        type: internal
+        tls: false
+      - name: tls
+        port: {{ .Values.service.kafka.port2 }}
+        type: internal
+        tls: false
+    config:
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      inter.broker.protocol.version: "3.1"
+    storage:
+      type: ephemeral
+  zookeeper:
+    replicas: 3
+    storage:
+      type: ephemeral
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}

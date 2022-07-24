@@ -52,9 +52,10 @@ service:
     type: ClusterIP
     ingressPath: /graphql
   kafka:
-    # TODO: Get correct dynamically created service name
-    name: detective-dev-kafka-cluster-kafka-bootstrap.kafka
-    port: 9092
+    name: detective-platform-kafka-cluster
+    fullName: detective-platform-kafka-cluster-kafka-bootstrap.kafka
+    port1: 9092
+    port2: 9093
     type: ClusterIP
 
 nameOverride: ""
