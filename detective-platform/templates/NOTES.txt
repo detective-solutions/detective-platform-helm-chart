@@ -1,9 +1,1 @@
 The chart was successfully installed!
-{{- if .Values.ingress.enabled }}
-The started application wil be available via Ingress on the following URLs:
-{{- range $host := .Values.ingress.hosts }}
-  {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
-  {{- end }}
-{{- end }}
-{{- end }}
