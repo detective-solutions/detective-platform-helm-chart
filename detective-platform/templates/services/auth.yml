@@ -24,10 +24,7 @@ spec:
       labels:
         app: {{ $deploymentName }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      imagePullSecrets: {{ .Values.image.pullSecret }}
       serviceAccountName: {{ include "detective-platform.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
