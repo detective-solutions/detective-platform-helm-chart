@@ -1,11 +1,12 @@
-# General variables
 {{- $containerPort := "1111" -}}
-{{- $deploymentName := "detective-platform-auth-service" -}}
+{{- $deploymentName := "detective-platform-auth" -}}
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $deploymentName }}
+  labels:
+    {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -22,20 +23,20 @@ spec:
       {{- end }}
       labels:
         app: {{ $deploymentName }}
-        {{- include "detective-platform.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "detective-platform.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $deploymentName }}
+          image: {{ .Values.image.repository }}/auth-service:{{ .Values.image.auth.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}/auth-service:{{ .Values.image.auth.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ $containerPort }}
               protocol: TCP
@@ -51,7 +52,7 @@ spec:
                   name: jwt-refresh-token-secret
                   key: jwk
             - name: DATABASE_GRPC_SERVICE_NAME
-              value: {{ .Values.dgraph }}
+              value: {{ .Values.dgraph.name }}
             - name: DATABASE_GRPC_PORT
               value: {{ .Values.dgraph.port }}
       {{- with .Values.nodeSelector }}
@@ -74,8 +75,8 @@ kind: Service
 metadata:
   name: {{ .Values.auth.name }}
   labels:
-    - app: {{ .Values.auth.name }}
-    - {{- include "detective-platform.labels" . | nindent 4 }}
+    app: {{ .Values.auth.name }}
+    {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
     - port: {{ .Values.auth.port }}
