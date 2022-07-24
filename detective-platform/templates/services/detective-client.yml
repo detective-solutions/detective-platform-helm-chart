@@ -40,21 +40,6 @@ spec:
           ports:
             - containerPort: {{ $containerPort }}
               protocol: TCP
-          env:
-            - name: ACCESS_TOKEN_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: jwt-refresh-token-secret
-                  key: jwk
-            - name: REFRESH_TOKEN_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: jwt-refresh-token-secret
-                  key: jwk
-            - name: DATABASE_GRPC_SERVICE_NAME
-              value: {{ .Values.dgraph.name }}
-            - name: DATABASE_GRPC_PORT
-              value: {{ .Values.dgraph.port }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
