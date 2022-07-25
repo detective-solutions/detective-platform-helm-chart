@@ -53,7 +53,7 @@ spec:
                   name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
             - name: KAFKA_SERVICE_NAME
-              value: {{ .Values.service.kafka.name | quote }}
+              value: {{ .Values.service.kafka.fullName | quote }}
             - name: KAFKA_PORT
               value: {{ .Values.service.kafka.port1 | quote }}
       {{- with .Values.nodeSelector }}
