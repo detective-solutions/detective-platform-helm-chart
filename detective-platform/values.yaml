@@ -73,7 +73,7 @@ service:
     port: 8000
   kafka:
     name: detective-kafka-cluster
-    fullName: detective-platform-kafka-cluster-kafka-bootstrap
+    fullName: detective-kafka-cluster-kafka-bootstrap
     port1: 9092
     port2: 9093
     type: ClusterIP
