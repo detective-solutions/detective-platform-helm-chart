@@ -1,6 +1,10 @@
 # This file should be used to override local configuration values when installing the Helm chart
 # See README.md for more information
 
+# Provide a valid domain name for the ingress loadbalancer configuration
+ingress:
+  domain:
+
 auth:
   # Go to https://randomkeygen.com
   # Choose a 152-bit WEP key as access token secret
@@ -8,5 +12,6 @@ auth:
   # Choose a 256-bit WEP key as access token secret
   jwtRefreshTokenSecretValue: X3lpZEwmVTxvQTBrPSYp
 
+# Provide a valid docker registry token to allow downloading the necessary images from a private registry
 image:
   registryToken:

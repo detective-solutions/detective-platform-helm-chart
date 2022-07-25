@@ -7,7 +7,7 @@ enableMonitoringTools: false
 
 ingress:
   name: detective-ingress
-  domain: detective.com
+  domain:
 
 
 auth:
