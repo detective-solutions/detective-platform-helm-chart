@@ -1,0 +1,43 @@
+{{- if .Values.enableMonitoringTools -}}
+
+{{- $containerPort := "8000" -}}
+{{- $deploymentName := "dgraph-ratel" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ $deploymentName }}
+    spec:
+      containers:
+        - name: {{ $deploymentName }}
+          image: dgraph/ratel:{{ .Values.image.ratel.tag }}
+          ports:
+            - containerPort: {{ $containerPort }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.ratel.name }}
+  labels:
+    app: {{ .Values.service.ratel.name }}
+spec:
+  ports:
+    - port: {{ .Values.service.ratel.port }}
+      targetPort: {{ $containerPort }}
+      protocol: TCP
+  type: {{ .Values.service.ratel.type }}
+  selector:
+    app: {{ $deploymentName }}
+
+{{- end }}
