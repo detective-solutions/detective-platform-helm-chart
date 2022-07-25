@@ -29,6 +29,12 @@ image:
     tag: 1.0.0-beta-DET-890
   websocketGateway:
     tag: 1.0.0-beta-DET-890
+  dgraph:
+    tag: v21.12.0@sha256:3b55ea83fffeb8909031552e504831068bb438ab7bb31471f3c16bd4ff99c1e4
+  kafka:
+    version: 3.2.0
+    protocolVersion: 3.2
+    replicaCount: 3
 
 service:
   detectiveClient:
@@ -47,8 +53,12 @@ service:
     type: ClusterIP
     ingressPath: /ws
   dgraph:
-    name: dgraph-alpha-public
-    port: 9080
+    alphaName: dgraph-alpha-public
+    zeroName: dgraph-zero-public
+    alphaHttpPort: 8080
+    alphaGrpcPort: 9080
+    zeroHttpPort: 6080
+    zeroGrpcPort: 5080
     type: ClusterIP
     ingressPath: /graphql
   kafka:

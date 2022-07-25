@@ -26,9 +26,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ .Values.service.dgraph.name }}
+            name: {{ .Values.service.dgraph.alphaName }}
             port:
-              number: {{ .Values.service.dgraph.port }}
+              number: {{ .Values.service.dgraph.alphaHttpPort }}
       - path: {{ .Values.service.auth.ingressPath }}
         pathType: Prefix
         backend:

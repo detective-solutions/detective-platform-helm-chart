@@ -53,9 +53,9 @@ spec:
                   name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
             - name: DATABASE_GRPC_SERVICE_NAME
-              value: {{ .Values.service.dgraph.name | quote }}
+              value: {{ .Values.service.dgraph.alphaName | quote }}
             - name: DATABASE_GRPC_PORT
-              value: {{ .Values.service.dgraph.port | quote }}
+              value: {{ .Values.service.dgraph.alphaGrpcPort | quote }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -1,0 +1,327 @@
+{{- $alphaDeploymentName := "dgraph-alpha" -}}
+{{- $alphaHttpContainerPort := "8080" -}}
+{{- $alphaGrpcContainerPort := "9080" -}}
+{{- $zeroDeploymentName := "dgraph-zero" -}}
+{{- $zeroHttpContainerPort := "6080" -}}
+{{- $zeroGrpcContainerPort := "5080" -}}
+
+# This highly available config creates 3 Dgraph Zeros and 3 Dgraph Alphas with 3
+# replicas. The Dgraph cluster will still be available to service requests even
+# when one Zero and/or one Alpha are down.
+#
+# There are 3 services can can be used to expose outside the cluster as needed:
+#       dgraph-zero-public - To load data using Live & Bulk Loaders
+#       dgraph-alpha-public - To connect clients and for HTTP APIs
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.dgraph.zeroName }}
+  labels:
+    app: {{ $zeroDeploymentName }}
+    monitor: zero-dgraph-io
+spec:
+  ports:
+  - port: {{ .Values.service.dgraph.zeroGrpcPort }}
+    targetPort: {{ $zeroGrpcContainerPort }}
+    name: grpc-zero
+  - port: {{ .Values.service.dgraph.zeroHttpPort }}
+    targetPort: {{ $zeroHttpContainerPort }}
+    name: http-zero
+  selector:
+    app: {{ $zeroDeploymentName }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.dgraph.alphaName }}
+  labels:
+    app: {{ $alphaDeploymentName }}
+    monitor: alpha-dgraph-io
+spec:
+  ports:
+  - port: {{ .Values.service.dgraph.alphaHttpPort }}
+    targetPort: {{ $alphaHttpContainerPort }}
+    name: http-alpha
+  - port: {{ .Values.service.dgraph.alphaGrpcPort }}
+    targetPort: {{ $alphaGrpcContainerPort }}
+    name: grpc-alpha
+  selector:
+    app: {{ $alphaDeploymentName }}
+---
+# This is a headless service which is necessary for discovery for a dgraph-zero StatefulSet.
+# https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#creating-a-statefulset
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $zeroDeploymentName }}
+  labels:
+    app: {{ $zeroDeploymentName }}
+spec:
+  ports:
+  - port: 5080
+    targetPort: 5080
+    name: grpc-zero
+  clusterIP: None
+  # We want all pods in the StatefulSet to have their addresses published for
+  # the sake of the other Dgraph Zero pods even before they're ready, since they
+  # have to be able to talk to each other in order to become ready.
+  publishNotReadyAddresses: true
+  selector:
+    app: {{ $zeroDeploymentName }}
+---
+# This is a headless service which is necessary for discovery for a dgraph-alpha StatefulSet.
+# https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#creating-a-statefulset
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $alphaDeploymentName }}
+  labels:
+    app: {{ $alphaDeploymentName }}
+spec:
+  ports:
+  - port: 7080
+    targetPort: 7080
+    name: grpc-alpha-int
+  clusterIP: None
+  # We want all pods in the StatefulSet to have their addresses published for
+  # the sake of the other Dgraph alpha pods even before they're ready, since they
+  # have to be able to talk to each other in order to become ready.
+  publishNotReadyAddresses: true
+  selector:
+    app: {{ $alphaDeploymentName }}
+---
+# This StatefulSet runs 3 Dgraph Zero.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $zeroDeploymentName }}
+spec:
+  serviceName: {{ $zeroDeploymentName }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $zeroDeploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ $zeroDeploymentName }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ $zeroDeploymentName }}
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: zero
+        image: dgraph/dgraph:{{ .Values.image.dgraph.tag }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ $zeroGrpcContainerPort }}
+          name: grpc-zero
+        - containerPort: {{ $zeroHttpContainerPort }}
+          name: http-zero
+        volumeMounts:
+        - name: datadir
+          mountPath: /dgraph
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        command:
+          - bash
+          - "-c"
+          - |
+            set -ex
+            [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+            ordinal=${BASH_REMATCH[1]}
+            idx=$(($ordinal + 1))
+            if [[ $ordinal -eq 0 ]]; then
+              exec dgraph zero --my=$(hostname -f):5080 --raft="idx=$idx" --replicas 1
+            else
+              exec dgraph zero --my=$(hostname -f):5080 --peer dgraph-zero-0.dgraph-zero.${POD_NAMESPACE}:5080 --raft="idx=$idx" --replicas 1
+            fi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ $zeroHttpContainerPort }}
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ $zeroHttpContainerPort }}
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - name: datadir
+        persistentVolumeClaim:
+          claimName: datadir
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: anything
+    spec:
+      accessModes:
+        - "ReadWriteOnce"
+      resources:
+        requests:
+          storage: 5Gi
+---
+# This StatefulSet runs 3 replicas of Dgraph Alpha.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $alphaDeploymentName }}
+spec:
+  serviceName: {{ $alphaDeploymentName }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $alphaDeploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ $alphaDeploymentName }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ $alphaDeploymentName }}
+              topologyKey: kubernetes.io/hostname
+      # Initializing the Alphas:
+      #
+      # You may want to initialize the Alphas with data before starting, e.g.
+      # with data from the Dgraph Bulk Loader: https://dgraph.io/docs/deploy/#bulk-loader.
+      # You can accomplish by uncommenting this initContainers config. This
+      # starts a container with the same /dgraph volume used by Alpha and runs
+      # before Alpha starts.
+      #
+      # You can copy your local p directory to the pod's /dgraph/p directory
+      # with this command:
+      #
+      #    kubectl cp path/to/p dgraph-alpha-0:/dgraph/ -c init-alpha
+      #    (repeat for each alpha pod)
+      #
+      # When you're finished initializing each Alpha data directory, you can signal
+      # it to terminate successfully by creating a /dgraph/doneinit file:
+      #
+      #    kubectl exec dgraph-alpha-0 -c init-alpha touch /dgraph/doneinit
+      #
+      # Note that pod restarts cause re-execution of Init Containers. Since
+      # /dgraph is persisted across pod restarts, the Init Container will exit
+      # automatically when /dgraph/doneinit is present and proceed with starting
+      # the Alpha process.
+      #
+      # Tip: StatefulSet pods can start in parallel by configuring
+      # .spec.podManagementPolicy to Parallel:
+      #
+      #     https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#deployment-and-scaling-guarantees
+      #
+      # initContainers:
+      #   - name: init-alpha
+      #     image: dgraph/dgraph:{{ .Values.image.dgraph.tag }}
+      #     command:
+      #       - bash
+      #       - "-c"
+      #       - |
+      #         trap "exit" SIGINT SIGTERM
+      #         echo "Write to /dgraph/doneinit when ready."
+      #         until [ -f /dgraph/doneinit ]; do sleep 2; done
+      #     volumeMounts:
+      #       - name: datadir
+      #         mountPath: /dgraph
+      containers:
+      - name: alpha
+        image: dgraph/dgraph:{{ .Values.image.dgraph.tag }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 7080
+          name: grpc-alpha-int
+        - containerPort: {{ $alphaHttpContainerPort }}
+          name: http-alpha
+        - containerPort: {{ $alphaGrpcContainerPort }}
+          name: grpc-alpha
+        volumeMounts:
+        - name: datadir
+          mountPath: /dgraph
+        env:
+          # This should be the same namespace as the dgraph-zero
+          # StatefulSet to resolve a Dgraph Zero's DNS name for
+          # Alpha's --zero flag.
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        # dgraph versions earlier than v1.2.3 and v20.03.0 can only support one zero:
+        #  `dgraph alpha --zero dgraph-zero-0.dgraph-zero.${POD_NAMESPACE}:5080`
+        # dgraph-alpha versions greater than or equal to v1.2.3 or v20.03.1 can support
+        #  a comma-separated list of zeros.  The value below supports 3 zeros
+        #  (set according to number of replicas)
+        command:
+          - bash
+          - "-c"
+          - |
+            set -ex
+            dgraph alpha --my=$(hostname -f):7080 --zero dgraph-zero-0.dgraph-zero.${POD_NAMESPACE}:5080,dgraph-zero-1.dgraph-zero.${POD_NAMESPACE}:5080,dgraph-zero-2.dgraph-zero.${POD_NAMESPACE}:5080
+        livenessProbe:
+          httpGet:
+            path: /health?live=1
+            port: {{ $alphaHttpContainerPort }}
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ $alphaHttpContainerPort }}
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+          successThreshold: 1
+      terminationGracePeriodSeconds: 600
+      volumes:
+      - name: datadir
+        persistentVolumeClaim:
+          claimName: datadir
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: anything
+    spec:
+      accessModes:
+        - "ReadWriteOnce"
+      resources:
+        requests:
+          storage: 5Gi
