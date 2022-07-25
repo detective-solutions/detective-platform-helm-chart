@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: {{ $deploymentName }}
-          image: obsidiandynamics/kafdrop:latest
+          image: obsidiandynamics/kafdrop:{{ .Values.image.kafdrop.tag }}
           ports:
             - containerPort: {{ $containerPort }}
           env:
@@ -40,6 +40,7 @@ spec:
     - port: {{ .Values.service.kafdrop.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
+  type: {{ .Values.service.kafdrop.type }}
   selector:
-    app: kafdrop
+    app: {{ $deploymentName }}
     {{- include "detective-platform.selectorLabels" . | nindent 4 }}

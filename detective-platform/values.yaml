@@ -35,6 +35,8 @@ image:
     version: 3.2.0
     protocolVersion: 3.2
     replicaCount: 3
+  kafdrop:
+    tag: 3.30.0@sha256:5337c9e0e2dee204bdde53e90cf97001f44fb9e8c3380340436efa844901a3f4
 
 service:
   detectiveClient:
