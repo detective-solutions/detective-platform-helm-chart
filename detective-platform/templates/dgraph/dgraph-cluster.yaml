@@ -10,8 +10,8 @@
 # when one Zero and/or one Alpha are down.
 #
 # There are 3 services can can be used to expose outside the cluster as needed:
-#       dgraph-zero-public - To load data using Live & Bulk Loaders
-#       dgraph-alpha-public - To connect clients and for HTTP APIs
+#       zero  - To load data using Live & Bulk Loaders
+#       alpha - To connect clients and for HTTP APIs
 
 apiVersion: v1
 kind: Service
