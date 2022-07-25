@@ -1,3 +1,5 @@
+{{- if .Values.enableMonitoringTools -}}
+
 {{- $containerPort := "9000" -}}
 {{- $deploymentName := "kafdrop" -}}
 
@@ -44,3 +46,5 @@ spec:
   selector:
     app: {{ $deploymentName }}
     {{- include "detective-platform.selectorLabels" . | nindent 4 }}
+
+{{- end }}

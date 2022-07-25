@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Enables monitoring tools like Kafdrop & DGraph Ratel
+enableMonitoringTools: false
+
 ingress:
   name: detective-platform-ingress
   domain: detective.com
