@@ -6,7 +6,7 @@
 enableMonitoringTools: false
 
 ingress:
-  name: detective-platform-ingress
+  name: detective-ingress
   domain: detective.com
 
 
@@ -60,8 +60,8 @@ service:
     type: ClusterIP
     ingressPath: /ws
   dgraph:
-    alphaName: dgraph-alpha-public
-    zeroName: dgraph-zero-public
+    alphaName: detective-dgraph-alpha-public
+    zeroName: detective-dgraph-zero-public
     alphaHttpPort: 8080
     alphaGrpcPort: 9080
     zeroHttpPort: 6080
@@ -69,16 +69,16 @@ service:
     type: ClusterIP
     ingressPath: /graphql
   ratel:
-    name: detective-platform-dgraph-ratel-service
+    name: detective-dgraph-ratel-service
     port: 8000
   kafka:
-    name: detective-platform-kafka-cluster
+    name: detective-kafka-cluster
     fullName: detective-platform-kafka-cluster-kafka-bootstrap
     port1: 9092
     port2: 9093
     type: ClusterIP
   kafdrop:
-    name: kafdrop-service
+    name: detective-kafdrop-service
     port: 9000
     type: ClusterIP
     ingressPath: /kafdrop
