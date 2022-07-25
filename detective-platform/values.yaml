@@ -53,7 +53,7 @@ service:
     ingressPath: /graphql
   kafka:
     name: detective-platform-kafka-cluster
-    fullName: detective-platform-kafka-cluster-kafka-bootstrap.kafka
+    fullName: detective-platform-kafka-cluster-kafka-bootstrap
     port1: 9092
     port2: 9093
     type: ClusterIP
