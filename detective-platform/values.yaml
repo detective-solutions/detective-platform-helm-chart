@@ -75,6 +75,7 @@ service:
   catalog:
     name: detective-catalog-service
     port: 3003
+    ingressPath: /v1/catalog
   query:
     name: detective-query-service
     port: 7799

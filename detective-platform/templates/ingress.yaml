@@ -43,6 +43,13 @@ spec:
             name: {{ .Values.service.websocketGateway.name }}
             port:
               number: {{ .Values.service.websocketGateway.port }}
+      - path: {{ .Values.service.catalog.ingressPath }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.catalog.name }}
+            port:
+              number: {{ .Values.service.catalog.port }}
       - path: {{ .Values.service.detectiveClient.ingressPath }}
         pathType: Prefix
         backend:
