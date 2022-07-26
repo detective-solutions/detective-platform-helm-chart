@@ -32,6 +32,8 @@ image:
     tag: 1.0.0-beta-DET-890
   websocketGateway:
     tag: 1.0.0-beta-DET-890
+  query:
+    tag: 1.0.0-beta
   dgraph:
     tag: v21.12.0@sha256:3b55ea83fffeb8909031552e504831068bb438ab7bb31471f3c16bd4ff99c1e4
   kafka:
@@ -56,6 +58,9 @@ service:
     name: detective-websocket-gateway-service
     port: 7777
     ingressPath: /ws
+  query:
+    name: detective-query-service
+    port: 7799
   dgraph:
     alphaName: detective-dgraph-alpha-public
     zeroName: detective-dgraph-zero-public
