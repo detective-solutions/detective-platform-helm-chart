@@ -47,17 +47,14 @@ service:
   detectiveClient:
     name: detective-client-service
     port: 80
-    type: ClusterIP
     ingressPath: /
   auth:
     name: detective-auth-service
     port: 1111
-    type: ClusterIP
     ingressPath: /v1/auth
   websocketGateway:
     name: detective-websocket-gateway-service
     port: 7777
-    type: ClusterIP
     ingressPath: /ws
   dgraph:
     alphaName: detective-dgraph-alpha-public
@@ -66,7 +63,6 @@ service:
     alphaGrpcPort: 9080
     zeroHttpPort: 6080
     zeroGrpcPort: 5080
-    type: ClusterIP
     ingressPath: /graphql
   ratel:
     name: detective-dgraph-ratel-service
@@ -76,11 +72,9 @@ service:
     fullName: detective-kafka-cluster-kafka-bootstrap
     port1: 9092
     port2: 9093
-    type: ClusterIP
   kafdrop:
     name: detective-kafdrop-service
     port: 9000
-    type: ClusterIP
     ingressPath: /kafdrop
 
 nameOverride: ""

@@ -83,6 +83,5 @@ spec:
     - port: {{ .Values.service.auth.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
-  type: {{ .Values.service.auth.type }}
   selector:
     app: {{ $deploymentName }}

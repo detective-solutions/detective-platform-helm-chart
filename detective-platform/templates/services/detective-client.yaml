@@ -68,6 +68,5 @@ spec:
     - port: {{ .Values.service.detectiveClient.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
-  type: {{ .Values.service.detectiveClient.type }}
   selector:
     app: {{ $deploymentName }}

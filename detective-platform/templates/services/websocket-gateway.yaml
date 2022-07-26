@@ -83,6 +83,5 @@ spec:
     - port: {{ .Values.service.websocketGateway.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
-  type: {{ .Values.service.websocketGateway.type }}
   selector:
     app: {{ $deploymentName }}

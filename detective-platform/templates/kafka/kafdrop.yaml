@@ -42,7 +42,6 @@ spec:
     - port: {{ .Values.service.kafdrop.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
-  type: {{ .Values.service.kafdrop.type }}
   selector:
     app: {{ $deploymentName }}
     {{- include "detective-platform.selectorLabels" . | nindent 4 }}
