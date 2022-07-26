@@ -1,0 +1,92 @@
+{{- $containerPort := "3003" -}}
+{{- $deploymentName := "detective-catalog" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+  labels:
+    {{- include "detective-platform.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: 1
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ $deploymentName }}
+      {{- include "detective-platform.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ $deploymentName }}
+        {{- include "detective-platform.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "detective-platform.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $deploymentName }}
+          image: {{ .Values.image.repository }}/catalog-service:{{ .Values.image.catalog.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - containerPort: {{ $containerPort }}
+              protocol: TCP
+          env:
+            - name: SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.jwtAccessTokenSecretName }}
+                  key: jwk
+            - name: ALGORITHM
+              value: "sha256"
+            - name: DGRAPH_SERVICE_NAME
+              value: {{ .Values.service.dgraph.alphaName | quote }}
+            - name: DGRAPH_PORT
+              value: {{ .Values.service.dgraph.alphaGrpcPort | quote }}
+            - name: KAFKA_SERVICE_NAME
+              value: {{ .Values.service.kafka.fullName | quote }}
+            - name: KAFKA_PORT
+              value: {{ .Values.service.kafka.port1 | quote }}
+            - name: TRINO_SERVICE_NAME
+              value: {{ .Values.service.kafka.fullName | quote }}
+            - name: TRINO_PORT
+              value: {{ .Values.service.kafka.port1 | quote }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.catalog.name }}
+  labels:
+    app: {{ .Values.service.catalog.name }}
+    {{- include "detective-platform.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .Values.service.catalog.port }}
+      targetPort: {{ $containerPort }}
+      protocol: TCP
+  selector:
+    app: {{ $deploymentName }}
