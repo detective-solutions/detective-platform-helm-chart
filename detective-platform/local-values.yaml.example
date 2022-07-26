@@ -15,5 +15,5 @@ auth:
 # Provide a valid docker registry token to allow downloading the necessary images from a private registry
 image:
   registryToken:
-   # Image tags whose default is the chart appVersion can be optionally overwritten here
+   # Image tags can be optionally overwritten here (most tags default to the chart's appVersion)
 
