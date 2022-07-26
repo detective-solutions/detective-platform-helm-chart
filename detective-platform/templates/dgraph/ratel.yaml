@@ -31,6 +31,7 @@ metadata:
   name: {{ .Values.service.ratel.name }}
   labels:
     app: {{ .Values.service.ratel.name }}
+    {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
     - port: {{ .Values.service.ratel.port }}

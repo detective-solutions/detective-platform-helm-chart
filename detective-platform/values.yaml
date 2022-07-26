@@ -97,7 +97,6 @@ service:
   kafdrop:
     name: detective-kafdrop-service
     port: 9000
-    ingressPath: /kafdrop
 
 nameOverride: ""
 fullnameOverride: ""

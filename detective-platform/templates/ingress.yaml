@@ -43,13 +43,6 @@ spec:
             name: {{ .Values.service.websocketGateway.name }}
             port:
               number: {{ .Values.service.websocketGateway.port }}
-      - path: {{ .Values.service.kafdrop.ingressPath }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.service.kafdrop.name }}
-            port:
-              number: {{ .Values.service.kafdrop.port }}
       - path: {{ .Values.service.detectiveClient.ingressPath }}
         pathType: Prefix
         backend:

@@ -26,8 +26,6 @@ spec:
           env:
             - name: KAFKA_BROKERCONNECT
               value: {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1}}
-            - name: SERVER_SERVLET_CONTEXTPATH
-              value: "/kafdrop"
       initContainers:
         - name: {{ $initDeploymentName }}
           image: busybox:{{ .Values.image.busybox.tag }}
@@ -49,6 +47,5 @@ spec:
       protocol: TCP
   selector:
     app: {{ $deploymentName }}
-    {{- include "detective-platform.selectorLabels" . | nindent 4 }}
 
 {{- end }}
