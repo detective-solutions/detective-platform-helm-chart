@@ -9,6 +9,7 @@ ingress:
   name: detective-ingress
   domain:
 
+namespace: default
 
 auth:
   jwtAccessTokenSecretName: jwt-access-token-secret
