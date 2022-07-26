@@ -53,6 +53,8 @@ image:
     tag: 3.30.0@sha256:5337c9e0e2dee204bdde53e90cf97001f44fb9e8c3380340436efa844901a3f4
   ratel:
     tag: v21.12.0@sha256:f34ac9708541c56dc922b40c537d7b113fead503bd788815da8da0a10a35038f
+  busybox:
+    tag: stable@sha256:dcdf379c574e1773d703f0c0d56d67594e7a91d6b84d11ff46799f60fb081c52
 
 service:
   detectiveClient:

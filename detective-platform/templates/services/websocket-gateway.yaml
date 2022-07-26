@@ -1,5 +1,6 @@
 {{- $containerPort := "7777" -}}
 {{- $deploymentName := "detective-websocket-gateway" -}}
+{{- $initDeploymentName := "init-detective-websocket-gateway" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -56,6 +57,10 @@ spec:
               value: {{ .Values.service.kafka.fullName | quote }}
             - name: KAFKA_PORT
               value: {{ .Values.service.kafka.port1 | quote }}
+      initContainers:
+        - name: {{ $initDeploymentName }}
+          image: busybox:{{ .Values.image.busybox.tag }}
+          command: ['sh', '-c', "until nslookup {{ .Values.service.kafka.fullName}}.{{ .Values.namespace }}.svc.cluster.local; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 10; done"]
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
