@@ -1,4 +1,4 @@
-{{- $containerPort := "8083" -}}
+{{- $containerPort := "8080" -}}
 {{- $deploymentName := "detective-trino-coordinator" -}}
 
 apiVersion: apps/v1
