@@ -1,5 +1,5 @@
 {{- $containerPort := "7777" -}}
-{{- $deploymentName := "detective-platform-websocket-gateway" -}}
+{{- $deploymentName := "detective-websocket-gateway" -}}
 
 apiVersion: apps/v1
 kind: Deployment

@@ -1,5 +1,5 @@
 {{- $containerPort := "1111" -}}
-{{- $deploymentName := "detective-platform-auth" -}}
+{{- $deploymentName := "detective-auth" -}}
 
 apiVersion: apps/v1
 kind: Deployment
