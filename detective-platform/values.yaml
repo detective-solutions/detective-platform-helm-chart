@@ -32,6 +32,8 @@ image:
     tag: 1.0.0-beta-DET-890
   websocketGateway:
     tag: 1.0.0-beta-DET-890
+  trino-coordinator:
+    tag: 1.0.0-beta
   query:
     tag: 1.0.0-beta
   dgraph:
@@ -58,6 +60,9 @@ service:
     name: detective-websocket-gateway-service
     port: 7777
     ingressPath: /ws
+  trinoCoordinator:
+    name: detective-trino-coordinator-service
+    port: 8083
   query:
     name: detective-query-service
     port: 7799
