@@ -26,23 +26,7 @@ image:
   repository: quay.io/detective.solutions
   pullPolicy: IfNotPresent
   replicaCount: 2
-  # Overrides image tags whose default is the chart appVersion.
-  detectiveClient:
-    tag: 1.0.0-beta-DET-890
-  auth:
-    tag: 1.0.0-beta-DET-890
-  websocketGateway:
-    tag: 1.0.0-beta-DET-890
-  trinoCoordinator:
-    tag: 1.0.0-beta
-  masking:
-    tag: 1.0.0-beta
-  catalog:
-    tag: 1.0.0-beta
-  query:
-    tag: 1.0.0-beta
-  versionControl:
-    tag: 1.0.0-beta
+  # Set metadata for third-party images which are not bound to the app version
   dgraph:
     tag: v21.12.0@sha256:3b55ea83fffeb8909031552e504831068bb438ab7bb31471f3c16bd4ff99c1e4
   kafka:
