@@ -39,13 +39,25 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
             - name: DGRAPH_SERVICE_NAME
-              value: {{ .Values.service.dgraph.alphaName | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.dgraph.name }}
+                  key: serviceName
             - name: DGRAPH_PORT
-              value: {{ .Values.service.dgraph.alphaGrpcPort | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.dgraph.name }}
+                  key: servicePort
             - name: KAFKA_SERVICE_NAME
-              value: {{ .Values.service.kafka.fullName | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.kafka.name }}
+                  key: serviceName
             - name: KAFKA_PORT
-              value: {{ .Values.service.kafka.port1 | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.kafka.name }}
+                  key: servicePort
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

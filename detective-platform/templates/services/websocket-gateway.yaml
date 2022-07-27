@@ -54,9 +54,15 @@ spec:
                   name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
             - name: KAFKA_SERVICE_NAME
-              value: {{ .Values.service.kafka.fullName | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.kafka.name }}
+                  key: serviceName
             - name: KAFKA_PORT
-              value: {{ .Values.service.kafka.port1 | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.kafka.name }}
+                  key: servicePort
       initContainers:
         - name: {{ $initDeploymentName }}
           image: busybox:{{ .Values.image.busybox.tag }}

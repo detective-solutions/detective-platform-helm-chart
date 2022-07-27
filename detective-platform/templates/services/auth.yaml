@@ -53,9 +53,15 @@ spec:
                   name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
             - name: DATABASE_GRPC_SERVICE_NAME
-              value: {{ .Values.service.dgraph.alphaName | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.dgraph.name }}
+                  key: serviceName
             - name: DATABASE_GRPC_PORT
-              value: {{ .Values.service.dgraph.alphaGrpcPort | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.dgraph.name }}
+                  key: servicePort
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

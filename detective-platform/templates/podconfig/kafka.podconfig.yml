@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.kafka.name }}
+data:
+  serviceName: {{ .Values.service.kafka.fullName | quote }}
+  servicePort: {{ .Values.service.kafka.port1 | quote }}

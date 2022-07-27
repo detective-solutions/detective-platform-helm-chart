@@ -99,6 +99,14 @@ service:
     name: detective-kafdrop-service
     port: 9000
 
+configMap:
+  dgraph:
+    name: dgraph-podconfig
+  kafka:
+    name: kafka-podconfig
+  trino:
+    name: trino-podconfig
+
 nameOverride: ""
 fullnameOverride: ""
 
