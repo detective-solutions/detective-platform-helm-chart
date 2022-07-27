@@ -1,1 +1,2 @@
 The chart was successfully installed!
+The application will be reachable on: {{ .Values.ingress.domain }}
