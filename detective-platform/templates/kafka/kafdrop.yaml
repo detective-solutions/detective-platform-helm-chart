@@ -30,7 +30,7 @@ spec:
       initContainers:
         - name: {{ $initDeploymentName }}
           image: busybox:{{ .Values.image.busybox.tag }}
-          command: ['sh', '-c', "until nslookup {{ .Values.service.kafka.fullName}}.{{ .Values.namespace }}.svc.cluster.local; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 10; done"]
+          command: ['sh', '-c', "until nslookup {{ .Values.service.kafka.fullName}}; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 30; done"]
 
 ---
 
