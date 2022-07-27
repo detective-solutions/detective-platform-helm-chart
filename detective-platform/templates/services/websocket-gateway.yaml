@@ -6,6 +6,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $deploymentName }}
+  namespace: {{ .Release.namespace }}
   labels:
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
@@ -86,6 +87,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.service.websocketGateway.name }}
+  namespace: {{ .Release.namespace }}
   labels:
     app: {{ .Values.service.websocketGateway.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}

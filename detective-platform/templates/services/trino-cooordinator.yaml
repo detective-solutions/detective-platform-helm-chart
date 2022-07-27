@@ -5,6 +5,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $deploymentName }}
+  namespace: {{ .Release.namespace }}
   labels:
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:

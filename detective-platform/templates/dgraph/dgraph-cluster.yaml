@@ -17,6 +17,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.service.dgraph.zeroName }}
+  namespace: {{ .Release.namespace }}
   labels:
     app: {{ $zeroDeploymentName }}
     monitor: zero-dgraph-io
@@ -35,6 +36,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.service.dgraph.alphaName }}
+  namespace: {{ .Release.namespace }}
   labels:
     app: {{ $alphaDeploymentName }}
     monitor: alpha-dgraph-io
@@ -55,6 +57,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ $zeroDeploymentName }}
+  namespace: {{ .Release.namespace }}
   labels:
     app: {{ $zeroDeploymentName }}
 spec:
@@ -76,6 +79,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ $alphaDeploymentName }}
+  namespace: {{ .Release.namespace }}
   labels:
     app: {{ $alphaDeploymentName }}
 spec:
@@ -96,6 +100,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ $zeroDeploymentName }}
+  namespace: {{ .Release.namespace }}
 spec:
   serviceName: {{ $zeroDeploymentName }}
   replicas: 1
@@ -191,6 +196,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ $alphaDeploymentName }}
+  namespace: {{ .Release.namespace }}
 spec:
   serviceName: {{ $alphaDeploymentName }}
   replicas: 1

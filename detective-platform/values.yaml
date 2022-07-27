@@ -9,8 +9,6 @@ ingress:
   name: detective-ingress
   domain:
 
-namespace: default
-
 auth:
   jwtAccessTokenSecretName: jwt-access-token-secret
   # MANDATORY: Access token secret need to be set when installing chart (via local-values.yaml or CLI)

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Values.configMap.trino.name }}
+  namespace: {{ .Release.namespace }}
 data:
   serviceName: {{ .Values.service.trinoCoordinator.name | quote }}
   servicePort: {{ .Values.service.trinoCoordinator.port | quote }}

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Values.configMap.dgraph.name }}
+  namespace: {{ .Release.namespace }}
 data:
   serviceName: {{ .Values.service.dgraph.alphaName | quote }}
   servicePort: {{ .Values.service.dgraph.alphaGrpcPort | quote }}
