@@ -1,5 +1,5 @@
-{{- $containerPort := "7799" -}}
 {{- $deploymentName := "detective-query" -}}
+{{- $initDeploymentName := "init-detective-query" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -73,6 +73,10 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.configMap.trino.name }}
                   key: servicePort
+      initContainers:
+        - name: {{ $initDeploymentName }}
+          image: busybox:{{ .Values.image.busybox.tag }}
+          command: ['sh', '-c', "until nslookup {{ .Values.service.kafka.fullName}}; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep {{ .Values.initContainerStartupDelay }}; done"]
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
