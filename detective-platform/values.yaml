@@ -8,6 +8,8 @@ enableMonitoringTools: false
 ingress:
   name: detective-ingress
   domain:
+  apiPrefix: /api
+  apiVersionPrefixV1: /v1
 
 auth:
   jwtAccessTokenSecretName: jwt-access-token-secret
@@ -55,10 +57,6 @@ image:
     tag: stable@sha256:dcdf379c574e1773d703f0c0d56d67594e7a91d6b84d11ff46799f60fb081c52
 
 service:
-  detectiveClient:
-    name: detective-client-service
-    port: 80
-    ingressPath: /
   auth:
     name: detective-auth-service
     port: 1111
@@ -67,16 +65,14 @@ service:
     name: detective-websocket-gateway-service
     port: 7777
     ingressPath: /ws
-  trinoCoordinator:
-    name: detective-trino-coordinator-service
-    port: 8083
   catalog:
     name: detective-catalog-service
     port: 3003
     ingressPath: /v1/catalog
-  query:
-    name: detective-query-service
-    port: 7799
+  detectiveClient:
+    name: detective-client-service
+    port: 80
+    ingressPath: /
   dgraph:
     alphaName: detective-dgraph-alpha-public
     zeroName: detective-dgraph-zero-public
@@ -85,6 +81,9 @@ service:
     zeroHttpPort: 6080
     zeroGrpcPort: 5080
     ingressPath: /graphql
+  trinoCoordinator:
+    name: detective-trino-coordinator-service
+    port: 8083
   ratel:
     name: detective-dgraph-ratel-service
     port: 8000

@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: {{ .Values.ingress.name }}
   annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: $1
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/server-snippets: |
@@ -22,34 +23,41 @@ spec:
   - host: {{ required "A valid domain name is required for the ingress configuration!" .Values.ingress.domain }}
     http:
       paths:
-      - path: {{ .Values.service.dgraph.ingressPath }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.service.dgraph.alphaName }}
-            port:
-              number: {{ .Values.service.dgraph.alphaHttpPort }}
-      - path: {{ .Values.service.auth.ingressPath }}
+      # API endpoints
+      # ---
+      - path: {{ .Values.ingress.apiPrefix }}({{ .Values.service.auth.ingressPath }}.*)
         pathType: Prefix
         backend:
           service:
             name: {{ .Values.service.auth.name }}
             port:
               number: {{ .Values.service.auth.port }}
-      - path: {{ .Values.service.websocketGateway.ingressPath }}
+      # Explicitly removes the API version prefix from the path, because the websocket-gateway doesn't have a versioned API
+      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}({{ .Values.service.websocketGateway.ingressPath }}.*)
         pathType: Prefix
         backend:
           service:
             name: {{ .Values.service.websocketGateway.name }}
             port:
               number: {{ .Values.service.websocketGateway.port }}
-      - path: {{ .Values.service.catalog.ingressPath }}
+      - path: {{ .Values.ingress.apiPrefix }}({{ .Values.service.catalog.ingressPath }}.*)
         pathType: Prefix
         backend:
           service:
             name: {{ .Values.service.catalog.name }}
             port:
               number: {{ .Values.service.catalog.port }}
+      # Explicitly removes the API version prefix from the path, because DGraph doesn't have a versioned API
+      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}({{ .Values.service.dgraph.ingressPath }}.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.dgraph.alphaName }}
+            port:
+              number: {{ .Values.service.dgraph.alphaHttpPort }}
+
+      # Client endpoints
+      # ---
       - path: {{ .Values.service.detectiveClient.ingressPath }}
         pathType: Prefix
         backend:
