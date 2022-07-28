@@ -108,6 +108,8 @@ configMap:
 nameOverride: ""
 fullnameOverride: ""
 
+initContainerStartupDelay: 80
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
