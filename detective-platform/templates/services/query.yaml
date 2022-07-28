@@ -39,9 +39,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          ports:
-            - containerPort: {{ $containerPort }}
-              protocol: TCP
           env:
             - name: DGRAPH_SERVICE_NAME
               valueFrom:
@@ -89,20 +86,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Values.service.query.name }}
-  labels:
-    app: {{ .Values.service.query.name }}
-    {{- include "detective-platform.labels" . | nindent 4 }}
-spec:
-  ports:
-    - port: {{ .Values.service.query.port }}
-      targetPort: {{ $containerPort }}
-      protocol: TCP
-  selector:
-    app: {{ $deploymentName }}
