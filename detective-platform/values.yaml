@@ -6,6 +6,8 @@
 enableMonitoringTools: false
 
 ingress:
+  # MANDATORY: Domain needs to be set when installing chart (via local-values.yaml or CLI)
+  domain:
   name: detective-ingress
   class: nginx
   apiPrefix: /api
@@ -19,10 +21,10 @@ ingress:
 
 auth:
   jwtAccessTokenSecretName: jwt-access-token-secret
-  # MANDATORY: Access token secret need to be set when installing chart (via local-values.yaml or CLI)
+  # MANDATORY: Access token secret needs to be set when installing chart (via local-values.yaml or CLI)
   jwtAccessTokenSecretValue:
   jwtRefreshTokenSecretName: jwt-refresh-token-secret
-  # MANDATORY: Access token secret need to be set when installing chart (via local-values.yaml or CLI)
+  # MANDATORY: Access token secret needs to be set when installing chart (via local-values.yaml or CLI)
   jwtRefreshTokenSecretValue:
 
 image:
@@ -32,6 +34,7 @@ image:
   repository: quay.io/detective.solutions
   pullPolicy: IfNotPresent
   replicaCount: 2
+  # Image tags default to the chart's appVersion if empty
   detectiveClient:
     tag:
   auth:
@@ -48,7 +51,8 @@ image:
     tag:
   versionControl:
     tag:
-  # Set metadata for third-party images which are not bound to the app version
+
+  # Set metadata for third-party images which are not bound to the chart's appVersion
   dgraph:
     tag: v21.12.0@sha256:3b55ea83fffeb8909031552e504831068bb438ab7bb31471f3c16bd4ff99c1e4
   kafka:
