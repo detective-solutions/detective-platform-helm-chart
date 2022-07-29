@@ -4,6 +4,8 @@
 # Provide a valid domain name for the ingress loadbalancer configuration
 ingress:
   domain:
+  tls:
+    enabled: true
 
 auth:
   # Go to https://randomkeygen.com

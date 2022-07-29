@@ -7,9 +7,15 @@ enableMonitoringTools: false
 
 ingress:
   name: detective-ingress
-  domain:
+  class: nginx
   apiPrefix: /api
   apiVersionPrefixV1: /v1
+  tls:
+    enabled: true
+    issuerName: letsencrypt
+    issuerUrl: https://acme-staging-v02.api.letsencrypt.org/directory
+    secretName: tls-cert-secret
+    acmeEmail: founders@detective.solutions
 
 auth:
   jwtAccessTokenSecretName: jwt-access-token-secret
