@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: {{ .Values.ingress.name }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: $1
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/server-snippets: |
@@ -25,7 +25,7 @@ spec:
       paths:
       # API endpoints
       # ---
-      - path: {{ .Values.ingress.apiPrefix }}({{ .Values.service.auth.ingressPath }}.*)
+      - path: {{ .Values.ingress.apiPrefix }}/({{ .Values.service.auth.ingressPath }}.*)
         pathType: Prefix
         backend:
           service:
@@ -33,14 +33,14 @@ spec:
             port:
               number: {{ .Values.service.auth.port }}
       # Explicitly removes the API version prefix from the path, because the websocket-gateway doesn't have a versioned API
-      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}({{ .Values.service.websocketGateway.ingressPath }}.*)
+      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}/({{ .Values.service.websocketGateway.ingressPath }}.*)
         pathType: Prefix
         backend:
           service:
             name: {{ .Values.service.websocketGateway.name }}
             port:
               number: {{ .Values.service.websocketGateway.port }}
-      - path: {{ .Values.ingress.apiPrefix }}({{ .Values.service.catalog.ingressPath }}.*)
+      - path: {{ .Values.ingress.apiPrefix }}/({{ .Values.service.catalog.ingressPath }}.*)
         pathType: Prefix
         backend:
           service:
@@ -48,7 +48,7 @@ spec:
             port:
               number: {{ .Values.service.catalog.port }}
       # Explicitly removes the API version prefix from the path, because DGraph doesn't have a versioned API
-      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}({{ .Values.service.dgraph.ingressPath }}.*)
+      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}/({{ .Values.service.dgraph.ingressPath }}.*)
         pathType: Prefix
         backend:
           service:
@@ -58,7 +58,7 @@ spec:
 
       # Client endpoints
       # ---
-      - path: {{ .Values.service.detectiveClient.ingressPath }}
+      - path: /(.*)
         pathType: Prefix
         backend:
           service:

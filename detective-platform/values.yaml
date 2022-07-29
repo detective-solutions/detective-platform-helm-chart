@@ -60,19 +60,18 @@ service:
   auth:
     name: detective-auth-service
     port: 1111
-    ingressPath: /v1/auth
+    ingressPath: v1/auth
   websocketGateway:
     name: detective-websocket-gateway-service
     port: 7777
-    ingressPath: /ws
+    ingressPath: ws
   catalog:
     name: detective-catalog-service
     port: 3003
-    ingressPath: /v1/catalog
+    ingressPath: v1/catalog
   detectiveClient:
     name: detective-client-service
     port: 80
-    ingressPath: /
   dgraph:
     alphaName: detective-dgraph-alpha-public
     zeroName: detective-dgraph-zero-public
@@ -80,7 +79,7 @@ service:
     alphaGrpcPort: 9080
     zeroHttpPort: 6080
     zeroGrpcPort: 5080
-    ingressPath: /graphql
+    ingressPath: graphql
   trinoCoordinator:
     name: detective-trino-coordinator-service
     port: 8083
