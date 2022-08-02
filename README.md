@@ -18,4 +18,4 @@ TODO: Simplify configuration to handle most cases via single CLI-call (something
 4. Set the `auth` secrets as described in `local-values.yaml.example`
 5. Check the `appVersion` property in `Chart.yaml` and change if necessary pull a different container version tag
 
-To forward services to a `localhost` port to be accessible by other local services, it is possible to use the Kubernetes CLI or utilize tools like [Kube Forwarder](https://kube-forwarder.pixelpoint.io/) (a predefined configuration file can be found in the `local` folder, which can be imported to Kube Forwarder)
+To forward services to a `localhost` port to be accessible by other local services, it is possible to use the Kubernetes CLI or utilize tools like [Kube Forwarder](https://kube-forwarder.pixelpoint.io/) (a predefined configuration file can be found in the `local/kube-forwarder` folder, which can be imported to Kube Forwarder)
