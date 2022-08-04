@@ -7,6 +7,10 @@ spec:
   kafka:
     version: {{ .Values.image.kafka.version }}
     replicas: {{ .Values.image.kafka.replicaCount }}
+    logging:
+      type: inline
+      loggers:
+        kafka.root.logger.level: {{ .Values.image.kafka.logLevel }}
     listeners:
       - name: plain
         port: {{ .Values.service.kafka.port1 }}
