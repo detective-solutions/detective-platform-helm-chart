@@ -2,7 +2,6 @@
 
 {{- $containerPort := "9000" -}}
 {{- $deploymentName := "kafdrop" -}}
-{{- $initDeploymentName := "init-kafdrop" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -28,9 +27,9 @@ spec:
             - name: KAFKA_BROKERCONNECT
               value: {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1}}
       initContainers:
-        - name: {{ $initDeploymentName }}
-          image: busybox:{{ .Values.image.busybox.tag }}
-          command: ['sh', '-c', "until nslookup {{ .Values.service.kafka.fullName}}; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep {{ .Values.initContainerStartupDelay }}; done"]
+        - name: wait-for-kafka-availability
+          image: confluentinc/cp-kafkacat:{{ .Values.image.kafkacat.tag }}
+          command: ['sh', '-c', "until kafkacat -b {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1 }} -L; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 10; done"]
 
 ---
 

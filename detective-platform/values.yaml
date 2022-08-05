@@ -68,6 +68,8 @@ image:
     tag: v21.12.0@sha256:f34ac9708541c56dc922b40c537d7b113fead503bd788815da8da0a10a35038f
   busybox:
     tag: stable@sha256:dcdf379c574e1773d703f0c0d56d67594e7a91d6b84d11ff46799f60fb081c52
+  kafkacat:
+    tag: 7.1.3@sha256:9659eda18f99d56ad7f0a7732a4b66fac20036b894e4137604275feaa8b3c49d
 
 service:
   auth:
@@ -119,7 +121,7 @@ configMap:
 nameOverride: ""
 fullnameOverride: ""
 
-initContainerStartupDelay: 100
+initContainerStartupDelay: 120
 
 serviceAccount:
   # Specifies whether a service account should be created

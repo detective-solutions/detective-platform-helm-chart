@@ -1,5 +1,4 @@
 {{- $deploymentName := "detective-version-control" -}}
-{{- $initDeploymentName := "init-detective-version-control" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -61,9 +60,12 @@ spec:
                   name: {{ .Values.configMap.kafka.name }}
                   key: servicePort
       initContainers:
-        - name: {{ $initDeploymentName }}
+        - name: wait-for-kafka-availability
+          image: confluentinc/cp-kafkacat:{{ .Values.image.kafkacat.tag }}
+          command: ['sh', '-c', "until kafkacat -b {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1 }} -L; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 10; done"]
+        - name: additional-time-buffer
           image: busybox:{{ .Values.image.busybox.tag }}
-          command: ['sh', '-c', "until nslookup {{ .Values.service.kafka.fullName}}; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep {{ .Values.initContainerStartupDelay }}; done"]
+          command: ['sh', '-c', "sleep {{ .Values.initContainerStartupDelay }}"]
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
