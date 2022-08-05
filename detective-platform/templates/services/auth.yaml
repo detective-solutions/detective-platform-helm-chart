@@ -1,6 +1,5 @@
 {{- $containerPort := "1111" -}}
 {{- $deploymentName := "detective-auth" -}}
-{{- $initDeploymentName := "init-detective-auth" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -64,10 +63,6 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.configMap.dgraph.name }}
                   key: servicePort
-      initContainers:
-        - name: {{ $initDeploymentName }}
-          image: busybox:{{ .Values.image.busybox.tag }}
-          command: ['sh', '-c', "until nslookup {{ .Values.service.dgraph.alphaName }}; do echo waiting for {{ .Values.service.dgraph.alphaName }}; sleep {{ .Values.initContainerStartupDelay }}; done"]
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
