@@ -11,6 +11,9 @@ spec:
       type: inline
       loggers:
         kafka.root.logger.level: {{ .Values.image.kafka.logLevel }}
+    template:
+      pod:
+        terminationGracePeriodSeconds: 120
     listeners:
       - name: plain
         port: {{ .Values.service.kafka.port1 }}
