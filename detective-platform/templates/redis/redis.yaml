@@ -1,0 +1,41 @@
+{{- $containerPort := "6379" -}}
+{{- $deploymentName := "detective-redis" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+  namespace: {{ .Release.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{$deploymentName }}
+    spec:
+      containers:
+        - name: {{ $deploymentName }}
+          image: redis:{{ .Values.image.redis.tag }}
+          ports:
+            - containerPort: {{ $containerPort }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.redis.name }}
+  namespace: {{ .Release.namespace }}
+  labels:
+    app: {{ .Values.service.redis.name }}
+    {{- include "detective-platform.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .Values.service.redis.port }}
+      targetPort: {{ $containerPort }}
+      protocol: TCP
+  selector:
+    app: {{ $deploymentName }}

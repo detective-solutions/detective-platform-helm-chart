@@ -66,6 +66,8 @@ image:
     tag: 3.30.0@sha256:5337c9e0e2dee204bdde53e90cf97001f44fb9e8c3380340436efa844901a3f4
   ratel:
     tag: v21.12.0@sha256:f34ac9708541c56dc922b40c537d7b113fead503bd788815da8da0a10a35038f
+  redis:
+    tag: 7.0.4-alpine@sha256:7c9e7c305125c68354c4902ed09a3c6da96436a5a2929b73f29748d56cf8e3c3
   busybox:
     tag: stable@sha256:bbb248c803ff97f51db3b37a2a604a6270cd2ee1ca9266120aeccb3b19ce80d2
   kafkacat:
@@ -98,9 +100,6 @@ service:
   trinoCoordinator:
     name: detective-trino-coordinator-service
     port: 8083
-  ratel:
-    name: detective-dgraph-ratel-service
-    port: 8000
   kafka:
     name: detective-kafka-cluster
     fullName: detective-kafka-cluster-kafka-bootstrap
@@ -109,6 +108,12 @@ service:
   kafdrop:
     name: detective-kafdrop-service
     port: 9000
+  ratel:
+    name: detective-dgraph-ratel-service
+    port: 8000
+  redis:
+    name: detective-redis-service
+    port: 6379
 
 configMap:
   dgraph:
