@@ -120,6 +120,8 @@ configMap:
     name: dgraph-podconfig
   kafka:
     name: kafka-podconfig
+  redis:
+    name: redis-podconfig
   trino:
     name: trino-podconfig
 

@@ -49,12 +49,22 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.configMap.kafka.name }}
                   key: servicePort
-            - name: DATABASE_GRPC_SERVICE_NAME
+            - name: REDIS_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.redis.name }}
+                  key: serviceName
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.redis.name }}
+                  key: servicePort
+            - name: DATABASE_SERVICE_NAME
               valueFrom:
                 configMapKeyRef:
                   name: {{ .Values.configMap.dgraph.name }}
                   key: serviceName
-            - name: DATABASE_GRPC_PORT
+            - name: DATABASE_PORT
               valueFrom:
                 configMapKeyRef:
                   name: {{ .Values.configMap.dgraph.name }}

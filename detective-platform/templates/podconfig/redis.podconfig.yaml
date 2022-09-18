@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.reids.name }}
+  namespace: {{ .Release.namespace }}
+data:
+  serviceName: {{ .Values.service.redis.name | quote }}
+  servicePort: {{ .Values.service.redis.port | quote }}

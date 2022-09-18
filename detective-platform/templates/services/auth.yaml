@@ -53,12 +53,12 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.auth.jwtRefreshTokenSecretName }}
                   key: jwk
-            - name: DATABASE_GRPC_SERVICE_NAME
+            - name: DATABASE_SERVICE_NAME
               valueFrom:
                 configMapKeyRef:
                   name: {{ .Values.configMap.dgraph.name }}
                   key: serviceName
-            - name: DATABASE_GRPC_PORT
+            - name: DATABASE_PORT
               valueFrom:
                 configMapKeyRef:
                   name: {{ .Values.configMap.dgraph.name }}
