@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: {{ $deploymentName }}
-          image: redis:{{ .Values.image.redis.tag }}
+          image: redislabs/redismod:{{ .Values.image.redis.tag }}
           ports:
             - containerPort: {{ $containerPort }}
 
