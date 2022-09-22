@@ -63,6 +63,16 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.configMap.kafka.name }}
                   key: servicePort
+            - name: REDIS_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.redis.name }}
+                  key: serviceName
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.redis.name }}
+                  key: servicePort
       initContainers:
         - name: wait-for-kafka-availability
           image: confluentinc/cp-kafkacat:{{ .Values.image.kafkacat.tag }}
