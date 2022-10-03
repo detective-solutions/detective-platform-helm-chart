@@ -14,6 +14,13 @@ auth:
   # Choose a 256-bit WEP key as access token secret
   jwtRefreshTokenSecretValue:
 
+payment:
+  stripe:
+    secret:
+    publishableKey:
+    webhookSecret:
+    changePaymentPortal:
+
 # Provide a valid docker registry token to allow downloading the necessary images from a private registry
 image:
   registryToken:

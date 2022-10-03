@@ -1,0 +1,109 @@
+{{- $containerPort := "3003" -}}
+{{- $deploymentName := "detective-provisioning" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+  namespace: {{ .Release.namespace }}
+  labels:
+    {{- include "detective-platform.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: 1
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ $deploymentName }}
+      {{- include "detective-platform.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ $deploymentName }}
+        {{- include "detective-platform.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "detective-platform.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $deploymentName }}
+          image: {{ .Values.image.repository }}/provisioning-service:{{ .Values.image.provisioning.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          ports:
+            - containerPort: {{ $containerPort }}
+              protocol: TCP
+          env:
+            - name: SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.jwtAccessTokenSecretName }}
+                  key: jwk
+            - name: ALGORITHM
+              value: "sha256"
+            - name: DGRAPH_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.dgraph.name }}
+                  key: serviceName
+            - name: DGRAPH_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.dgraph.name }}
+                  key: servicePort
+            - name: AUTH_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.auth.name }}
+                  key: serviceName
+            - name: AUTH_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.auth.name }}
+                  key: servicePort
+      initContainers:
+        - name: wait-for-kafka-availability
+          image: confluentinc/cp-kafkacat:{{ .Values.image.kafkacat.tag }}
+          command: ['sh', '-c', "until kafkacat -b {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1 }} -L; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 10; done"]
+        - name: additional-time-buffer
+          image: busybox:{{ .Values.image.busybox.tag }}
+          command: ['sh', '-c', "sleep {{ .Values.initContainerStartupDelay }}"]
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.provisioning.name }}
+  namespace: {{ .Release.namespace }}
+  labels:
+    app: {{ .Values.service.provisioning.name }}
+    {{- include "detective-platform.labels" . | nindent 4 }}
+spec:
+  ports:
+    - port: {{ .Values.service.provisioning.port }}
+      targetPort: {{ $containerPort }}
+      protocol: TCP
+  selector:
+    app: {{ $deploymentName }}

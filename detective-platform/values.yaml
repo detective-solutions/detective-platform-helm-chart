@@ -27,6 +27,13 @@ auth:
   # MANDATORY: Access token secret needs to be set when installing chart (via local-values.yaml or CLI)
   jwtRefreshTokenSecretValue:
 
+payment:
+  stripe:
+    secret:
+    publishableKey:
+    webhookSecret:
+    changePaymentPortal:
+
 image:
   # MANDATORY: Registry token needs to be set when installing chart (via local-values.yaml or CLI)
   registryToken:
@@ -42,6 +49,8 @@ image:
   detectiveClient:
     tag:
   masking:
+    tag:
+  provisioning:
     tag:
   query:
     tag:
@@ -74,28 +83,6 @@ image:
     tag: 7.1.3@sha256:9ba74ef2a8a74d42ffe62f79472ed0203db37f744b181c15dde971978b497b8e
 
 service:
-  dgraph:
-    alphaName: detective-dgraph-alpha-public
-    zeroName: detective-dgraph-zero-public
-    alphaHttpPort: 8080
-    alphaGrpcPort: 9080
-    zeroHttpPort: 6080
-    zeroGrpcPort: 5080
-    ingressPath: graphql
-  ratel:
-    name: detective-dgraph-ratel-service
-    port: 8000
-  kafdrop:
-    name: detective-kafdrop-service
-    port: 9000
-  kafka:
-    name: detective-kafka-cluster
-    fullName: detective-kafka-cluster-kafka-bootstrap
-    port1: 9092
-    port2: 9093
-  redis:
-    name: detective-redis-service
-    port: 6379
   auth:
     name: detective-auth-service
     port: 1111
@@ -107,6 +94,32 @@ service:
   detectiveClient:
     name: detective-client-service
     port: 80
+  dgraph:
+    alphaName: detective-dgraph-alpha-public
+    zeroName: detective-dgraph-zero-public
+    alphaHttpPort: 8080
+    alphaGrpcPort: 9080
+    zeroHttpPort: 6080
+    zeroGrpcPort: 5080
+    ingressPath: graphql
+  kafdrop:
+    name: detective-kafdrop-service
+    port: 9000
+  kafka:
+    name: detective-kafka-cluster
+    fullName: detective-kafka-cluster-kafka-bootstrap
+    port1: 9092
+    port2: 9093
+  provisioning:
+    name: detective-provisioning-service
+    port: 3005
+    ingressPath: v1/provisioning
+  ratel:
+    name: detective-dgraph-ratel-service
+    port: 8000
+  redis:
+    name: detective-redis-service
+    port: 6379
   trinoCoordinator:
     name: detective-trino-coordinator-service
     port: 8083
