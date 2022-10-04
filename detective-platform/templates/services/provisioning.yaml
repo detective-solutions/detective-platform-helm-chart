@@ -70,13 +70,26 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.configMap.auth.name }}
                   key: servicePort
-      initContainers:
-        - name: wait-for-kafka-availability
-          image: confluentinc/cp-kafkacat:{{ .Values.image.kafkacat.tag }}
-          command: ['sh', '-c', "until kafkacat -b {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1 }} -L; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 10; done"]
-        - name: additional-time-buffer
-          image: busybox:{{ .Values.image.busybox.tag }}
-          command: ['sh', '-c', "sleep {{ .Values.initContainerStartupDelay }}"]
+            - name: STRIPE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.payment.stripe.secretName }}
+                  key: secret
+            - name: STRIPE_PUBLISHABLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.payment.stripe.secretName }}
+                  key: publishableKey
+            - name: STRIPE_WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.payment.stripe.secretName }}
+                  key: webhookSecret
+            - name: STRIPE_CHANGE_PAYMENT_PORTAL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.payment.stripe.secretName }}
+                  key: changePaymentPortal
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

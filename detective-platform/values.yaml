@@ -29,9 +29,14 @@ auth:
 
 payment:
   stripe:
+    secretName: stripe-secret
+    # MANDATORY: Stripe Secret needs to be set when installing chart (via local-values.yaml or CLI)
     secret:
+    # MANDATORY: Stripe Publishable Key secret needs to be set when installing chart (via local-values.yaml or CLI)
     publishableKey:
+    # MANDATORY: Stripe Webhook Secret needs to be set when installing chart (via local-values.yaml or CLI)
     webhookSecret:
+    # MANDATORY: Stripe Change Payment Portal secret needs to be set when installing chart (via local-values.yaml or CLI)
     changePaymentPortal:
 
 image:
@@ -112,7 +117,7 @@ service:
     port2: 9093
   provisioning:
     name: detective-provisioning-service
-    port: 3005
+    port: 3003
     ingressPath: v1/provisioning
   ratel:
     name: detective-dgraph-ratel-service
@@ -129,6 +134,8 @@ service:
     ingressPath: ws
 
 configMap:
+  auth:
+    name: auth-podconfig
   dgraph:
     name: dgraph-podconfig
   kafka:
