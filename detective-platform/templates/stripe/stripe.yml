@@ -1,0 +1,23 @@
+{{- $deploymentName := "detective-stripe" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $deploymentName }}
+  namespace: {{ .Release.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{$deploymentName }}
+    spec:
+      containers:
+        - name: {{ $deploymentName }}
+          image: stripe/stripe-cli:{{ .Values.image.stripe.tag }}
+          args: ["listen", "--api-key", "{{ .Values.payment.stripe.secret }}", "--forward-to", "{{ .Values.service.provisioning.name }}:{{ .Values.service.provisioning.port }}/v1/provisioning/payment/webhook"]
+
+
