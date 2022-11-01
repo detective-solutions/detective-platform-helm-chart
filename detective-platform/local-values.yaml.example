@@ -1,6 +1,16 @@
 # This file should be used to override local configuration values when installing the Helm chart
 # See README.md for more information
 
+email:
+  server:
+  port:
+  username:
+  password:
+  fromAddress:
+  fromName:
+  templateCompanyName:
+  templateCompanyLocation:
+
 # Provide a valid domain name for the ingress loadbalancer configuration
 ingress:
   domain:

@@ -5,6 +5,25 @@
 # Enables monitoring tools like Kafdrop & DGraph Ratel
 enableMonitoringTools: false
 
+email:
+  secretName: email-secret
+  # MANDATORY: Email server address needs to be set when installing chart (via local-values.yaml or CLI)
+  server:
+  # MANDATORY: Email server port needs to be set when installing chart (via local-values.yaml or CLI)
+  port:
+  # MANDATORY: Email username needs to be set when installing chart (via local-values.yaml or CLI)
+  username:
+  # MANDATORY: Email password needs to be set when installing chart (via local-values.yaml or CLI)
+  password:
+  # MANDATORY: Email sender address needs to be set when installing chart (via local-values.yaml or CLI)
+  fromAddress:
+  # MANDATORY: Email sender name needs to be set when installing chart (via local-values.yaml or CLI)
+  fromName:
+  # MANDATORY: Email template company name needs to be set when installing chart (via local-values.yaml or CLI)
+  templateCompanyName:
+  # MANDATORY: Email template company location needs to be set when installing chart (via local-values.yaml or CLI)
+  templateCompanyLocation:
+
 ingress:
   # MANDATORY: Domain needs to be set when installing chart (via local-values.yaml or CLI)
   domain:

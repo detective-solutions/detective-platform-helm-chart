@@ -90,6 +90,46 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.payment.stripe.secretName }}
                   key: changePaymentPortal
+            - name: MAIL_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.secretName }}
+                  key: emailServer
+            - name: MAIL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.secretName }}
+                  key: emailServerPort
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.secretName }}
+                  key: emailUsername
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.secretName }}
+                  key: emailPassword
+            - name: MAIL_FROM
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.secretName }}
+                  key: emailFrom
+            - name: MAIL_FROM_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.secretName }}
+                  key: emailFromName
+            - name: COMPANY_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.secretName }}
+                  key: emailTemplateCompanyName
+            - name: COMPANY_LOCATION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.email.secretName }}
+                  key: emailTemplateCompanyLocation
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
