@@ -41,14 +41,6 @@ spec:
             name: {{ .Values.service.auth.name }}
             port:
               number: {{ .Values.service.auth.port }}
-      # Explicitly removes the API version prefix from the path, because the websocket-gateway doesn't have a versioned API
-      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}/({{ .Values.service.websocketGateway.ingressPath }}.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.service.websocketGateway.name }}
-            port:
-              number: {{ .Values.service.websocketGateway.port }}
       - path: {{ .Values.ingress.apiPrefix }}/({{ .Values.service.catalog.ingressPath }}.*)
         pathType: Prefix
         backend:
@@ -64,6 +56,28 @@ spec:
             name: {{ .Values.service.dgraph.alphaName }}
             port:
               number: {{ .Values.service.dgraph.alphaHttpPort }}
+      - path: {{ .Values.ingress.apiPrefix }}/({{ .Values.service.provisioning.ingressPath }}.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.provisioning.name }}
+            port:
+              number: {{ .Values.service.provisioning.port }}
+      - path: /register(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.provisioning.name }}
+            port:
+              number: {{ .Values.service.provisioning.port }}
+      # Explicitly removes the API version prefix from the path, because the websocket-gateway doesn't have a versioned API
+      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}/({{ .Values.service.websocketGateway.ingressPath }}.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.websocketGateway.name }}
+            port:
+              number: {{ .Values.service.websocketGateway.port }}
 
       # Client endpoints
       # ---

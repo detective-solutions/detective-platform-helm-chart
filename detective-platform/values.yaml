@@ -5,6 +5,25 @@
 # Enables monitoring tools like Kafdrop & DGraph Ratel
 enableMonitoringTools: false
 
+email:
+  secretName: email-secret
+  # MANDATORY: Email server address needs to be set when installing chart (via local-values.yaml or CLI)
+  server:
+  # MANDATORY: Email server port needs to be set when installing chart (via local-values.yaml or CLI)
+  port:
+  # MANDATORY: Email username needs to be set when installing chart (via local-values.yaml or CLI)
+  username:
+  # MANDATORY: Email password needs to be set when installing chart (via local-values.yaml or CLI)
+  password:
+  # MANDATORY: Email sender address needs to be set when installing chart (via local-values.yaml or CLI)
+  fromAddress:
+  # MANDATORY: Email sender name needs to be set when installing chart (via local-values.yaml or CLI)
+  fromName:
+  # MANDATORY: Email template company name needs to be set when installing chart (via local-values.yaml or CLI)
+  templateCompanyName:
+  # MANDATORY: Email template company location needs to be set when installing chart (via local-values.yaml or CLI)
+  templateCompanyLocation:
+
 ingress:
   # MANDATORY: Domain needs to be set when installing chart (via local-values.yaml or CLI)
   domain:
@@ -27,6 +46,18 @@ auth:
   # MANDATORY: Access token secret needs to be set when installing chart (via local-values.yaml or CLI)
   jwtRefreshTokenSecretValue:
 
+payment:
+  stripe:
+    secretName: stripe-secret
+    # MANDATORY: Stripe Secret needs to be set when installing chart (via local-values.yaml or CLI)
+    secret:
+    # MANDATORY: Stripe Publishable Key secret needs to be set when installing chart (via local-values.yaml or CLI)
+    publishableKey:
+    # MANDATORY: Stripe Webhook Secret needs to be set when installing chart (via local-values.yaml or CLI)
+    webhookSecret:
+    # MANDATORY: Stripe Change Payment Portal secret needs to be set when installing chart (via local-values.yaml or CLI)
+    changePaymentPortal:
+
 image:
   # MANDATORY: Registry token needs to be set when installing chart (via local-values.yaml or CLI)
   registryToken:
@@ -43,6 +74,8 @@ image:
     tag:
   masking:
     tag:
+  provisioning:
+    tag:
   query:
     tag:
   transaction:
@@ -55,6 +88,8 @@ image:
     tag:
 
   # Set metadata for third-party images which are not bound to the chart's appVersion
+  busybox:
+    tag: stable@sha256:bbb248c803ff97f51db3b37a2a604a6270cd2ee1ca9266120aeccb3b19ce80d2
   dgraph:
     tag: v21.12.0@sha256:3b55ea83fffeb8909031552e504831068bb438ab7bb31471f3c16bd4ff99c1e4
   kafka:
@@ -64,38 +99,16 @@ image:
     logLevel: "INFO"
   kafdrop:
     tag: 3.30.0@sha256:5337c9e0e2dee204bdde53e90cf97001f44fb9e8c3380340436efa844901a3f4
+  kafkacat:
+    tag: 7.1.3@sha256:9ba74ef2a8a74d42ffe62f79472ed0203db37f744b181c15dde971978b497b8e
   ratel:
     tag: v21.12.0@sha256:f34ac9708541c56dc922b40c537d7b113fead503bd788815da8da0a10a35038f
   redis:
     tag: 2.2.0@sha256:bd25b223430f3bc027caee8b57d05f6db75fbb25e0c6110aeb7016a78bd4d4ed
-  busybox:
-    tag: stable@sha256:bbb248c803ff97f51db3b37a2a604a6270cd2ee1ca9266120aeccb3b19ce80d2
-  kafkacat:
-    tag: 7.1.3@sha256:9ba74ef2a8a74d42ffe62f79472ed0203db37f744b181c15dde971978b497b8e
+  stripe:
+    tag: 1.12.4@sha256:508b9133b97b62d41ab3ae8cf9d9756bc9b1a959c8162255dfc98e92160a7d04
 
 service:
-  dgraph:
-    alphaName: detective-dgraph-alpha-public
-    zeroName: detective-dgraph-zero-public
-    alphaHttpPort: 8080
-    alphaGrpcPort: 9080
-    zeroHttpPort: 6080
-    zeroGrpcPort: 5080
-    ingressPath: graphql
-  ratel:
-    name: detective-dgraph-ratel-service
-    port: 8000
-  kafdrop:
-    name: detective-kafdrop-service
-    port: 9000
-  kafka:
-    name: detective-kafka-cluster
-    fullName: detective-kafka-cluster-kafka-bootstrap
-    port1: 9092
-    port2: 9093
-  redis:
-    name: detective-redis-service
-    port: 6379
   auth:
     name: detective-auth-service
     port: 1111
@@ -107,6 +120,32 @@ service:
   detectiveClient:
     name: detective-client-service
     port: 80
+  dgraph:
+    alphaName: detective-dgraph-alpha-public
+    zeroName: detective-dgraph-zero-public
+    alphaHttpPort: 8080
+    alphaGrpcPort: 9080
+    zeroHttpPort: 6080
+    zeroGrpcPort: 5080
+    ingressPath: graphql
+  kafdrop:
+    name: detective-kafdrop-service
+    port: 9000
+  kafka:
+    name: detective-kafka-cluster
+    fullName: detective-kafka-cluster-kafka-bootstrap
+    port1: 9092
+    port2: 9093
+  provisioning:
+    name: detective-provisioning-service
+    port: 3003
+    ingressPath: v1/provisioning
+  ratel:
+    name: detective-dgraph-ratel-service
+    port: 8000
+  redis:
+    name: detective-redis-service
+    port: 6379
   trinoCoordinator:
     name: detective-trino-coordinator-service
     port: 8083
@@ -116,6 +155,8 @@ service:
     ingressPath: ws
 
 configMap:
+  auth:
+    name: auth-podconfig
   dgraph:
     name: dgraph-podconfig
   kafka:
