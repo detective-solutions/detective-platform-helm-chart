@@ -89,9 +89,9 @@ image:
 
   # Set metadata for third-party images which are not bound to the chart's appVersion
   busybox:
-    tag: stable@sha256:bbb248c803ff97f51db3b37a2a604a6270cd2ee1ca9266120aeccb3b19ce80d2
+    tag: stable@sha256:f75f3d1a317fc82c793d567de94fc8df2bece37acd5f2bd364a0d91a0d1f3dab
   dgraph:
-    tag: v21.12.0@sha256:3b55ea83fffeb8909031552e504831068bb438ab7bb31471f3c16bd4ff99c1e4
+    tag: v22.0.1@sha256:47a5c3733ff60145f8c72a69a9f398f999826fda02775c6270c10dff82195f50
   kafka:
     version: 3.2.0
     protocolVersion: 3.2
@@ -100,13 +100,13 @@ image:
   kafdrop:
     tag: 3.30.0@sha256:5337c9e0e2dee204bdde53e90cf97001f44fb9e8c3380340436efa844901a3f4
   kafkacat:
-    tag: 7.1.3@sha256:9ba74ef2a8a74d42ffe62f79472ed0203db37f744b181c15dde971978b497b8e
+    tag: 7.1.4@sha256:9ba74ef2a8a74d42ffe62f79472ed0203db37f744b181c15dde971978b497b8e
   ratel:
     tag: v21.12.0@sha256:f34ac9708541c56dc922b40c537d7b113fead503bd788815da8da0a10a35038f
   redis:
-    tag: 2.2.0@sha256:bd25b223430f3bc027caee8b57d05f6db75fbb25e0c6110aeb7016a78bd4d4ed
+    tag: 2.4.2@sha256:babef3817535d0e81b3da5519219a49e00e02879a3ce752b08c771d2fff49d73
   stripe:
-    tag: 1.12.4@sha256:508b9133b97b62d41ab3ae8cf9d9756bc9b1a959c8162255dfc98e92160a7d04
+    tag: v1.13.5@sha256:9695151951ce5396b157aa7b7170ce378985786b98c1a97310ccb99fce84ee41
 
 service:
   auth:
