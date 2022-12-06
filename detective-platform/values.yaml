@@ -78,8 +78,6 @@ image:
     tag:
   query:
     tag:
-  transaction:
-    tag:
   trinoCoordinator:
     tag:
   versionControl:
