@@ -12,17 +12,17 @@ email:
   # MANDATORY: Email server port needs to be set when installing chart (via local-values.yaml or CLI)
   port:
   # MANDATORY: Email username needs to be set when installing chart (via local-values.yaml or CLI)
-  username:
+  username: detective
   # MANDATORY: Email password needs to be set when installing chart (via local-values.yaml or CLI)
   password:
   # MANDATORY: Email sender address needs to be set when installing chart (via local-values.yaml or CLI)
-  fromAddress:
+  fromAddress: provisioning@detective.solutions
   # MANDATORY: Email sender name needs to be set when installing chart (via local-values.yaml or CLI)
-  fromName:
+  fromName: detective
   # MANDATORY: Email template company name needs to be set when installing chart (via local-values.yaml or CLI)
-  templateCompanyName:
+  templateCompanyName: detective.solutions GmbH
   # MANDATORY: Email template company location needs to be set when installing chart (via local-values.yaml or CLI)
-  templateCompanyLocation:
+  templateCompanyLocation: Fleher Straße 32 40223 Düsseldorf
 
 ingress:
   # MANDATORY: Domain needs to be set when installing chart (via local-values.yaml or CLI)
@@ -50,18 +50,18 @@ payment:
   stripe:
     secretName: stripe-secret
     # MANDATORY: Stripe Secret needs to be set when installing chart (via local-values.yaml or CLI)
-    secret:
+    secret: sk_test_51LP6igFQtP5mX26XiMXrS43HdGL1H0OFDzDXeXvejesZrvX9NclhP9bM3qskHgAHvUQfWEgoOVg23Q4nGEYpeCIu008q8IWS6D
     # MANDATORY: Stripe Publishable Key secret needs to be set when installing chart (via local-values.yaml or CLI)
-    publishableKey:
+    publishableKey: pk_test_51LP6igFQtP5mX26XvscLF3URsvnkFTbG3AqiKsZXMfToCFZe1JxEt83AusMgQNVdkK7Tjwe3RjyAfnYGIyJmyKIA00s6nutxvP
     # MANDATORY: Stripe Webhook Secret needs to be set when installing chart (via local-values.yaml or CLI)
-    webhookSecret:
+    webhookSecret: whsec_f0de0d0e5b657b8c3893d2bfadd4227b2f7960345452cd8fcd747406f2943885
     # MANDATORY: Stripe Change Payment Portal secret needs to be set when installing chart (via local-values.yaml or CLI)
-    changePaymentPortal:
+    changePaymentPortal: https://billing.stripe.com/p/login/test_6oE7ti0AO1VwcnK5kk
 
 image:
   # MANDATORY: Registry token needs to be set when installing chart (via local-values.yaml or CLI)
   registryToken:
-  pullSecrets: [ name: docker-registry-credentials ]
+  pullSecrets: [name: docker-registry-credentials]
   repository: quay.io/detective.solutions
   pullPolicy: IfNotPresent
   replicaCount: 2
@@ -182,10 +182,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -193,7 +195,8 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following

@@ -1,38 +1,43 @@
 # This file should be used to override local configuration values when installing the Helm chart
 # See README.md for more information
 
-email:
-  server:
-  port:
-  username:
-  password:
-  fromAddress:
-  fromName:
-  templateCompanyName:
-  templateCompanyLocation:
+enableMonitoringTools: true
 
-# Provide a valid domain name for the ingress loadbalancer configuration
+email:
+  server: smtp.office365.com
+  port: 587
+  username: provisioning@detective.solutions
+  password: Gad42941
+  fromAddress: provisioning@detective.solutions
+  fromName: detective
+  templateCompanyName: detective.solutions GmbH
+  templateCompanyLocation: Fleher Straße 32, 40223 Düsseldorf
+
 ingress:
-  domain:
+  domain: dev.detective.solutions
   tls:
-    enabled: true
+    enabled: false
 
 auth:
   # Go to https://randomkeygen.com
   # Choose a 152-bit WEP key as access token secret
-  jwtAccessTokenSecretValue:
+  jwtAccessTokenSecretValue: U1RDVyx0WmdZakxpa0g4
   # Choose a 256-bit WEP key as access token secret
-  jwtRefreshTokenSecretValue:
+  jwtRefreshTokenSecretValue: X3lpZEwmVTxvQTBrPSYp
 
 payment:
   stripe:
-    secret:
-    publishableKey:
-    webhookSecret:
-    changePaymentPortal:
+    secret: sk_test_51LP6igFQtP5mX26XiMXrS43HdGL1H0OFDzDXeXvejesZrvX9NclhP9bM3qskHgAHvUQfWEgoOVg23Q4nGEYpeCIu008q8IWS6D
+    publishableKey: pk_test_51LP6igFQtP5mX26XvscLF3URsvnkFTbG3AqiKsZXMfToCFZe1JxEt83AusMgQNVdkK7Tjwe3RjyAfnYGIyJmyKIA00s6nutxvP
+    webhookSecret: whsec_f0de0d0e5b657b8c3893d2bfadd4227b2f7960345452cd8fcd747406f2943885
+    changePaymentPortal: https://billing.stripe.com/p/login/test_6oE7ti0AO1VwcnK5kk
 
-# Provide a valid docker registry token to allow downloading the necessary images from a private registry
 image:
-  registryToken:
-   # Image tags can be optionally overwritten here (most tags default to the chart's appVersion)
-
+  registryToken: ewogICJhdXRocyI6IHsKICAgICJxdWF5LmlvIjogewogICAgICAiYXV0aCI6ICJaR1YwWldOMGFYWmxMbk52YkhWMGFXOXVjeXR1YVdkb2RHeDVYMk5wT2t4S1ZFTllTVmxJTVZORFFWb3lNRUUxTTA1SVFsRTJXRkJNVlZGSVFqUllSa0pVUVRSVVQwOHlXa1V5VXpoWVRrY3dSbEpLUzFCRE9WbzFNVFZXVkRJPSIsCiAgICAgICJlbWFpbCI6ICIiCiAgICB9CiAgfQp9
+  # Overrides image tags whose default is the chart appVersion.
+  transaction:
+    tag: 1.0.0-beta-DET-968
+  websocketGateway:
+    tag: 1.0.0-beta-DET-968
+  detectiveClient:
+    tag: 1.0.0-beta-DET-968
