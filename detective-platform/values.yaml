@@ -105,6 +105,8 @@ image:
     tag: 2.4.2@sha256:babef3817535d0e81b3da5519219a49e00e02879a3ce752b08c771d2fff49d73
   stripe:
     tag: v1.13.5@sha256:9695151951ce5396b157aa7b7170ce378985786b98c1a97310ccb99fce84ee41
+  mariadb:
+    tag: latest@sha256:a681349fc17a7b1a506e938347dff725e3298b590dd78f7d1dcb48e5830000d0
 
 service:
   auth:
@@ -147,6 +149,13 @@ service:
   trinoCoordinator:
     name: detective-trino-coordinator-service
     port: 8083
+  hiveMetastore:
+    name: detective-hive-meta-store
+    port: 9083
+  mariadb:
+    name: detective-meta-store-db
+    port: 3306
+
   websocketGateway:
     name: detective-websocket-gateway-service
     port: 7777
@@ -163,6 +172,8 @@ configMap:
     name: redis-podconfig
   trino:
     name: trino-podconfig
+  mariadb:
+    name: mariadb-podconfig
 
 nameOverride: ""
 fullnameOverride: ""

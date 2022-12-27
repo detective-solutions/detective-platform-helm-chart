@@ -1,5 +1,5 @@
-{{- $containerPort := "8080" -}}
-{{- $deploymentName := "detective-trino-coordinator" -}}
+{{- $containerPort := "3306" -}}
+{{- $deploymentName := "detective-meta-store-db" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -35,7 +35,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $deploymentName }}
-          image: {{ .Values.image.repository }}/trino-coordinator:{{ .Values.image.trinoCoordinator.tag | default .Chart.AppVersion }}
+          image: 
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -43,8 +43,15 @@ spec:
             - containerPort: {{ $containerPort }}
               protocol: TCP
           env:
-            - name: METASTORE_DB_HOSTNAME
-              value: mariadb
+            - name: MYSQL_ROOT_PASSWORD
+              value: admin
+            - name: MYSQL_USER
+              value: admin
+            - name: MYSQL_PASSWORD
+              value: admin
+            - name: MYSQL_DATABASE
+              value: metastore_db          
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -63,13 +70,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.trinoCoordinator.name }}
+  name: {{ .Values.service.mariadb.name }}
   labels:
-    app: {{ .Values.service.trinoCoordinator.name }}
+    app: {{ .Values.service.mariadb.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.trinoCoordinator.port }}
+    - port: {{ .Values.service.mariadb.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
   selector:
