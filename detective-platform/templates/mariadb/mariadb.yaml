@@ -1,5 +1,5 @@
-{{- $containerPort := "8080" -}}
-{{- $deploymentName := "detective-trino-coordinator" -}}
+{{- $containerPort := "3306" -}}
+{{- $deploymentName := "detective-mariadb" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -35,7 +35,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $deploymentName }}
-          image: {{ .Values.image.repository }}/trino-coordinator:{{ .Values.image.trinoCoordinator.tag | default .Chart.AppVersion }}
+          image: mariadb:{{ .Values.image.mariadb.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -43,16 +43,27 @@ spec:
             - containerPort: {{ $containerPort }}
               protocol: TCP
           env:
-            - name: METASTORE_DB_HOSTNAME
+            - name: MYSQL_ROOT_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.configMap.mariadb.name }}
-                  key: serviceName
-            - name: METASTORE_DB_PORT
+                secretKeyRef:
+                  name: {{ .Values.mariadb.mySqlRootPassword }}
+                  key: mySqlRootPassword
+            - name: MYSQL_USER
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.configMap.mariadb.name }}
-                  key: servicePort
+                secretKeyRef:
+                  name: {{ .Values.mariadb.mySqUser }}
+                  key: mySqUser
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mariadb.mySqlPassword }}
+                  key: mySqlPassword
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mariadb.mySqlDatabase }}
+                  key: mySqlDatabase
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -71,13 +82,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.trinoCoordinator.name }}
+  name: {{ .Values.service.mariadb.name }}
   labels:
-    app: {{ .Values.service.trinoCoordinator.name }}
+    app: {{ .Values.service.mariadb.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.trinoCoordinator.port }}
+    - port: {{ .Values.service.mariadb.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
   selector:

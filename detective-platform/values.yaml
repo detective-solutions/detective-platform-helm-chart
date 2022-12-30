@@ -106,7 +106,11 @@ image:
   stripe:
     tag: v1.13.5@sha256:9695151951ce5396b157aa7b7170ce378985786b98c1a97310ccb99fce84ee41
   mariadb:
-    tag: latest@sha256:a681349fc17a7b1a506e938347dff725e3298b590dd78f7d1dcb48e5830000d0
+    tag: 10.9.4@sha256:5834aa3731eda1ab657a3e91370895b3b6fe98b1e720c0b1167877f714345cd3
+  hive:
+    tag: latest@sha256:b44a186b6dcffafc6a72327aaa5912a5824feecb50718aaf661727ff6aef011b
+  minio:
+    tag: 2022.12.12@sha256:b1f9bb5f1bf8e203fe20fa6cecc526126fa57c95a40fd57f4305a5b3256fb136
 
 service:
   auth:
@@ -149,13 +153,15 @@ service:
   trinoCoordinator:
     name: detective-trino-coordinator-service
     port: 8083
-  hiveMetastore:
-    name: detective-hive-meta-store
-    port: 9083
   mariadb:
-    name: detective-meta-store-db
+    name: detective-mariadb
     port: 3306
-
+  hive:
+    name: detective-hive
+    port: 9083
+  minio:
+    name: detective-minio
+    port: 9001
   websocketGateway:
     name: detective-websocket-gateway-service
     port: 7777
@@ -174,6 +180,10 @@ configMap:
     name: trino-podconfig
   mariadb:
     name: mariadb-podconfig
+  hive:
+    name: hive-podconfig
+  minio:
+    name: minio-podconfig
 
 nameOverride: ""
 fullnameOverride: ""

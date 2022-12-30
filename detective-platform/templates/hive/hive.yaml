@@ -1,5 +1,5 @@
-{{- $containerPort := "3306" -}}
-{{- $deploymentName := "detective-meta-store-db" -}}
+{{- $containerPort := "9083" -}}
+{{- $deploymentName := "detective-hive" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -35,7 +35,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $deploymentName }}
-          image: 
+          image: bitsondatadev/hive-metastore:{{ .Values.image.hive.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -43,14 +43,11 @@ spec:
             - containerPort: {{ $containerPort }}
               protocol: TCP
           env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: admin
-            - name: MYSQL_USER
-              value: admin
-            - name: MYSQL_PASSWORD
-              value: admin
-            - name: MYSQL_DATABASE
-              value: metastore_db          
+            - name: METASTORE_DB_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.mariadb.name }}
+                  key: serviceName
 
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -70,13 +67,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.mariadb.name }}
+  name: {{ .Values.service.hive.name }}
   labels:
-    app: {{ .Values.service.mariadb.name }}
+    app: {{ .Values.service.hive.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.mariadb.port }}
+    - port: {{ .Values.service.hive.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
   selector:

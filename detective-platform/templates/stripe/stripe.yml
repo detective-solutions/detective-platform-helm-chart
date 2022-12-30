@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{$deploymentName }}
+        app: {{ $deploymentName }}
     spec:
       containers:
         - name: {{ $deploymentName }}
