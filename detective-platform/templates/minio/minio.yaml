@@ -35,24 +35,28 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $deploymentName }}
-          image: bitnami/minio:{{ .Values.image.minio.tag }}
+          image: minio/minio:{{ .Values.image.minio.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           ports:
             - containerPort: {{ $containerPort }}
               protocol: TCP
-          command: ["server /data"]
+          command:
+          - /bin/bash
+          - -c
+          args:
+          - minio server /data --console-address :9090
           env:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.minio.minioAccessKey }}
+                  name: {{ .Values.db.minio.secretName }}
                   key: minioAccessKey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.minio.minioSecretKey }}
+                  name: {{ .Values.db.minio.secretName }}
                   key: minioSecretKey
 
       {{- with .Values.nodeSelector }}

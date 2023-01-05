@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Enables monitoring tools like Kafdrop & DGraph Ratel
+# Enables monitoring tools like Kafdrop & DGraph Rate
 enableMonitoringTools: false
 
 email:
@@ -58,6 +58,15 @@ payment:
     # MANDATORY: Stripe Change Payment Portal secret needs to be set when installing chart (via local-values.yaml or CLI)
     changePaymentPortal: https://billing.stripe.com/p/login/test_6oE7ti0AO1VwcnK5kk
 
+upload:
+  secretName: upload-secret
+
+db:
+  mariadb:
+    secretName: mariadb-secret
+  minio:
+    secretName: minio-secret
+
 image:
   # MANDATORY: Registry token needs to be set when installing chart (via local-values.yaml or CLI)
   registryToken:
@@ -77,6 +86,8 @@ image:
   provisioning:
     tag:
   query:
+    tag:
+  upload:
     tag:
   trinoCoordinator:
     tag:
@@ -110,7 +121,7 @@ image:
   hive:
     tag: latest@sha256:b44a186b6dcffafc6a72327aaa5912a5824feecb50718aaf661727ff6aef011b
   minio:
-    tag: 2022.12.12@sha256:b1f9bb5f1bf8e203fe20fa6cecc526126fa57c95a40fd57f4305a5b3256fb136
+    tag: RELEASE.2023-01-02T09-40-09Z.fips@sha256:d8e897769b9bde54da1e3447a6e268d6161c4e5da2512b02303201a87eacb56f
 
 service:
   auth:
@@ -134,7 +145,7 @@ service:
     ingressPath: graphql
   kafdrop:
     name: detective-kafdrop-service
-    port: 9000
+    port: 9001
   kafka:
     name: detective-kafka-cluster
     fullName: detective-kafka-cluster-kafka-bootstrap
@@ -144,6 +155,10 @@ service:
     name: detective-provisioning-service
     port: 3003
     ingressPath: v1/provisioning
+  upload:
+    name: detective-upload-service
+    port: 3007
+    ingressPath: v1/upload
   ratel:
     name: detective-dgraph-ratel-service
     port: 8000
@@ -161,7 +176,7 @@ service:
     port: 9083
   minio:
     name: detective-minio
-    port: 9001
+    port: 9000
   websocketGateway:
     name: detective-websocket-gateway-service
     port: 7777
@@ -182,8 +197,12 @@ configMap:
     name: mariadb-podconfig
   hive:
     name: hive-podconfig
+    mount:
+      name: hive-mount-podconfig
   minio:
     name: minio-podconfig
+  upload:
+    name: upload-podconfig
 
 nameOverride: ""
 fullnameOverride: ""

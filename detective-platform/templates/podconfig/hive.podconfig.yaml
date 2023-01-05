@@ -6,3 +6,13 @@ metadata:
 data:
   serviceName: {{ .Values.service.hive.name | quote }}
   servicePort: {{ .Values.service.hive.port | quote }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.hive.mount.name }}
+  namespace: {{ .Release.namespace }}
+data:
+{{ (.Files.Glob "templates/hive/mount*").AsConfig | indent 2 }}

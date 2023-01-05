@@ -46,22 +46,22 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.mariadb.mySqlRootPassword }}
+                  name: {{ .Values.db.mariadb.secretName }}
                   key: mySqlRootPassword
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.mariadb.mySqUser }}
-                  key: mySqUser
+                  name: {{ .Values.db.mariadb.secretName }}
+                  key: mySqlUser
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.mariadb.mySqlPassword }}
+                  name: {{ .Values.db.mariadb.secretName }}
                   key: mySqlPassword
             - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.mariadb.mySqlDatabase }}
+                  name: {{ .Values.db.mariadb.secretName }}
                   key: mySqlDatabase
 
       {{- with .Values.nodeSelector }}
