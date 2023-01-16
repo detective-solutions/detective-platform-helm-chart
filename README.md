@@ -19,3 +19,11 @@ TODO: Simplify configuration to handle most cases via single CLI-call (something
 5. Check the `appVersion` property in `Chart.yaml` and change if necessary pull a different container version tag
 
 To forward services to a `localhost` port to be accessible by other local services, it is possible to use the Kubernetes CLI or utilize tools like [Kube Forwarder](https://kube-forwarder.pixelpoint.io/) (a predefined configuration file can be found in the `local/kube-forwarder` folder, which can be imported to Kube Forwarder)
+
+      initContainers:
+      - name: take-data-dir-ownership
+        image: alpine:3
+        command: ['chown -R 777:777 /opt/apache-hive-metastore-3.0.0-bin/conf/']
+        volumeMounts:
+        - name: {{ .Values.configMap.hive.mount.name }}
+          mountPath: /opt/apache-hive-metastore-3.0.0-bin/conf/

@@ -39,6 +39,16 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
+            - name: AUTH_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.auth.name }}
+                  key: serviceName
+            - name: AUTH_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.auth.name }}
+                  key: servicePort
             - name: DGRAPH_SERVICE_NAME
               valueFrom:
                 configMapKeyRef:

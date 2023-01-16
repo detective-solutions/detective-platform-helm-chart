@@ -64,6 +64,10 @@ upload:
 db:
   mariadb:
     secretName: mariadb-secret
+    mySqlRootPassword: admin
+    mySqlUser: admin
+    mySqlPassword: admin
+    mySqlDatabase: metastore_db
   minio:
     secretName: minio-secret
 

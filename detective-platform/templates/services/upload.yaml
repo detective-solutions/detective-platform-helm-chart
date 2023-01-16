@@ -50,6 +50,18 @@ spec:
                   key: jwk
             - name: ALGORITHM
               value: "sha256"
+            - name: BUCKET_XID
+              value: "7982569f-9424-11ed-93f1-27dd7c3b61c3"
+            - name: AUTH_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.auth.name }}
+                  key: serviceName
+            - name: AUTH_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.auth.name }}
+                  key: servicePort
             - name: DGRAPH_SERVICE_NAME
               valueFrom:
                 configMapKeyRef:
@@ -98,20 +110,13 @@ spec:
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.upload.secretName }}
+                  name: {{ .Values.db.minio.secretName }}
                   key: minioSecretKey
             - name: CONVERT_API_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.db.minio.secretName }}
+                  name: {{ .Values.upload.secretName }}
                   key: convertApiSecret
-      initContainers:
-        - name: wait-for-kafka-availability
-          image: confluentinc/cp-kafkacat:{{ .Values.image.kafkacat.tag }}
-          command: ['sh', '-c', "until kafkacat -b {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1 }} -L; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 10; done"]
-        - name: additional-time-buffer
-          image: busybox:{{ .Values.image.busybox.tag }}
-          command: ['sh', '-c', "sleep {{ .Values.initContainerStartupDelay }}"]
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
