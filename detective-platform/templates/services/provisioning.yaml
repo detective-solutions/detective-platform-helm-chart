@@ -1,4 +1,4 @@
-{{- $containerPort := "3003" -}}
+{{- $containerPort := "3004" -}}
 {{- $deploymentName := "detective-provisioning" -}}
 
 apiVersion: apps/v1
