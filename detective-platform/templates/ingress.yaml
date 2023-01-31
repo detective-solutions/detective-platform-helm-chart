@@ -70,12 +70,11 @@ spec:
             name: {{ .Values.service.provisioning.name }}
             port:
               number: {{ .Values.service.provisioning.port }}
-      # Explicitly removes the API version prefix from the path, because the websocket-gateway doesn't have a versioned API
-      - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}/({{ .Values.service.upload.ingressPath }}.*)
+      - path: {{ .Values.ingress.apiPrefix }}/({{ .Values.service.upload.ingressPath }}.*)
         pathType: Prefix
         backend:
           service:
-            name: {{ .Values.service.upload.name }k}
+            name: {{ .Values.service.upload.name }}
             port:
               number: {{ .Values.service.upload.port }}
       # Explicitly removes the API version prefix from the path, because the websocket-gateway doesn't have a versioned API
