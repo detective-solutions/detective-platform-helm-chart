@@ -5,4 +5,4 @@ metadata:
   namespace: {{ .Release.namespace }}
 data:
   serviceName: {{ .Values.service.minio.name | quote }}
-  servicePort: {{ .Values.service.minio.port | quote }}
+  servicePort: {{ .Values.service.minio.port1 | quote }}

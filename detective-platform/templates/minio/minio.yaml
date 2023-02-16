@@ -1,4 +1,4 @@
-{{- $containerPort := "9083" -}}
+{{- $containerPort := "9000" -}}
 {{- $deploymentName := "detective-minio" -}}
 
 apiVersion: apps/v1
@@ -83,7 +83,7 @@ metadata:
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.minio.port }}
+    - port: {{ .Values.service.minio.port1 }}
       targetPort: {{ $containerPort }}
       protocol: TCP
   selector:

@@ -173,14 +173,16 @@ service:
     name: detective-trino-coordinator-service
     port: 8083
   mariadb:
-    name: detective-mariadb
+    name: detective-mariadb-service
     port: 3306
   hive:
-    name: detective-hive
+    name: detective-hive-service
     port: 9083
   minio:
-    name: detective-minio
-    port: 9000
+    name: detective-minio-service
+    port1: 9000
+    port2: 9001
+    port3: 9090
   websocketGateway:
     name: detective-websocket-gateway-service
     port: 7777
