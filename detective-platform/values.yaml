@@ -157,7 +157,7 @@ service:
     port2: 9093
   provisioning:
     name: detective-provisioning-service
-    port: 3003
+    port: 3004
     ingressPath: v1/provisioning
   upload:
     name: detective-upload-service

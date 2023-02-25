@@ -90,6 +90,16 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.configMap.trino.name }}
                   key: servicePort
+            - name: AUTH_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.auth.name }}
+                  key: serviceName
+            - name: AUTH_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.auth.name }}
+                  key: servicePort
       initContainers:
         - name: wait-for-kafka-availability
           image: confluentinc/cp-kafkacat:{{ .Values.image.kafkacat.tag }}

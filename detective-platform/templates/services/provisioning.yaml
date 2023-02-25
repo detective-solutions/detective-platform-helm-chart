@@ -1,4 +1,4 @@
-{{- $containerPort := "3003" -}}
+{{- $containerPort := "3004" -}}
 {{- $deploymentName := "detective-provisioning" -}}
 
 apiVersion: apps/v1
@@ -49,7 +49,7 @@ spec:
                   name: {{ .Values.auth.jwtAccessTokenSecretName }}
                   key: jwk
             - name: ALGORITHM
-              value: "sha256"
+              value: "HS256"
             - name: DGRAPH_SERVICE_NAME
               valueFrom:
                 configMapKeyRef:
