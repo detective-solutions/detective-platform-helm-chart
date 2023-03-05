@@ -51,13 +51,13 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.db.minio.secretName }}
-                  key: minioAccessKey
+                  name: {{ .Values.upload.secretName }}
+                  key: accessKey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.db.minio.secretName }}
-                  key: minioSecretKey
+                  name: {{ .Values.upload.secretName }}
+                  key: secretKey
 
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -83,7 +83,7 @@ metadata:
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.minio.port1 }}
+    - port: {{ .Values.service.minio.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
   selector:

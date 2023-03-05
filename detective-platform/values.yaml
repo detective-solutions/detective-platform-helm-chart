@@ -60,6 +60,9 @@ payment:
 
 upload:
   secretName: upload-secret
+  accessKey: secret
+  secretKey: secret123
+  convertApiSecret: umtWc20e89gdFxXt
 
 db:
   mariadb:
@@ -68,8 +71,6 @@ db:
     mySqlUser: admin
     mySqlPassword: admin
     mySqlDatabase: metastore_db
-  minio:
-    secretName: minio-secret
 
 image:
   # MANDATORY: Registry token needs to be set when installing chart (via local-values.yaml or CLI)
@@ -180,9 +181,8 @@ service:
     port: 9083
   minio:
     name: detective-minio-service
-    port1: 9000
-    port2: 9001
-    port3: 9090
+    port: 9000
+    ingressPath: v1/files
   websocketGateway:
     name: detective-websocket-gateway-service
     port: 7777
