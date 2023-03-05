@@ -50,6 +50,8 @@ spec:
                   key: jwk
             - name: ALGORITHM
               value: "HS256"
+            - name: DEPLOYMENT_DOMAIN
+              value: {{ .Values.ingress.domain }}
             - name: BUCKET_XID
               value: "7982569f-9424-11ed-93f1-27dd7c3b61c3"
             - name: AUTH_SERVICE_NAME
@@ -105,13 +107,13 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.db.minio.secretName }}
-                  key: minioAccessKey
+                  name: {{ .Values.upload.secretName }}
+                  key: accessKey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.db.minio.secretName }}
-                  key: minioSecretKey
+                  name: {{ .Values.upload.secretName }}
+                  key: secretKey
             - name: CONVERT_API_SECRET
               valueFrom:
                 secretKeyRef:
