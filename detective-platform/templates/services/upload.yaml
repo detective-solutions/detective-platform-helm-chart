@@ -50,8 +50,10 @@ spec:
                   key: jwk
             - name: ALGORITHM
               value: "HS256"
-            - name: DEPLOYMENT_DOMAIN
+            - name: DOMAIN_NAME
               value: {{ .Values.ingress.domain }}
+            - name: TLS_ENABLED
+              value: {{ .Values.ingress.tls.enabled }}
             - name: BUCKET_XID
               value: "7982569f-9424-11ed-93f1-27dd7c3b61c3"
             - name: AUTH_SERVICE_NAME
