@@ -6,9 +6,11 @@ metadata:
     {{- if .Values.ingress.tls.enabled }}
     cert-manager.io/issuer: {{ .Values.ingress.tls.issuerName }}
     {{- end }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 1024m
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/upstream-vhost: "{{ .Values.service.minio.name }}:{{ .Values.service.minio.port }}"
     nginx.ingress.kubernetes.io/server-snippets: |
       location / {
         proxy_set_header Upgrade $http_upgrade;
@@ -70,6 +72,20 @@ spec:
             name: {{ .Values.service.provisioning.name }}
             port:
               number: {{ .Values.service.provisioning.port }}
+      - path: {{ .Values.ingress.apiPrefix }}/({{ .Values.service.upload.ingressPath }}.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.upload.name }}
+            port:
+              number: {{ .Values.service.upload.port }}
+      - path: {{ .Values.ingress.apiPrefix }}/{{ .Values.service.minio.ingressPath }}/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.minio.name }}
+            port:
+              number: {{ .Values.service.minio.port }}
       # Explicitly removes the API version prefix from the path, because the websocket-gateway doesn't have a versioned API
       - path: {{ .Values.ingress.apiPrefix }}{{ .Values.ingress.apiVersionPrefixV1 }}/({{ .Values.service.websocketGateway.ingressPath }}.*)
         pathType: Prefix

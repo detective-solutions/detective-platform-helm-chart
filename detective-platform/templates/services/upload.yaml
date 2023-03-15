@@ -1,5 +1,5 @@
-{{- $containerPort := "3003" -}}
-{{- $deploymentName := "detective-catalog" -}}
+{{- $containerPort := "3007" -}}
+{{- $deploymentName := "detective-upload" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -35,7 +35,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $deploymentName }}
-          image: {{ .Values.image.repository }}/catalog-service:{{ .Values.image.catalog.tag | default .Chart.AppVersion }}
+          image: {{ .Values.image.repository }}/upload-service:{{ .Values.image.upload.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -50,6 +50,12 @@ spec:
                   key: jwk
             - name: ALGORITHM
               value: "HS256"
+            - name: DOMAIN_NAME
+              value: {{ .Values.ingress.domain }}
+            - name: TLS_ENABLED
+              value: {{ .Values.ingress.tls.enabled | quote }}
+            - name: BUCKET_XID
+              value: "7982569f-9424-11ed-93f1-27dd7c3b61c3"
             - name: AUTH_SERVICE_NAME
               valueFrom:
                 configMapKeyRef:
@@ -90,13 +96,31 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.configMap.trino.name }}
                   key: servicePort
-      initContainers:
-        - name: wait-for-kafka-availability
-          image: confluentinc/cp-kafkacat:{{ .Values.image.kafkacat.tag }}
-          command: ['sh', '-c', "until kafkacat -b {{ .Values.service.kafka.fullName }}:{{ .Values.service.kafka.port1 }} -L; do echo waiting for {{ .Values.service.kafka.fullName }}; sleep 10; done"]
-        - name: additional-time-buffer
-          image: busybox:{{ .Values.image.busybox.tag }}
-          command: ['sh', '-c', "sleep {{ .Values.initContainerStartupDelay }}"]
+            - name: MINIO_SERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.minio.name }}
+                  key: serviceName
+            - name: MINIO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configMap.minio.name }}
+                  key: servicePort
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.upload.secretName }}
+                  key: accessKey
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.upload.secretName }}
+                  key: secretKey
+            - name: CONVERT_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.upload.secretName }}
+                  key: convertApiSecret
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -115,14 +139,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.catalog.name }}
+  name: {{ .Values.service.upload.name }}
   namespace: {{ .Release.namespace }}
   labels:
-    app: {{ .Values.service.catalog.name }}
+    app: {{ .Values.service.upload.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.catalog.port }}
+    - port: {{ .Values.service.upload.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
   selector:

@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.hive.name }}
+  namespace: {{ .Release.namespace }}
+data:
+  serviceName: {{ .Values.service.hive.name | quote }}
+  servicePort: {{ .Values.service.hive.port | quote }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.hive.mount.name }}
+  namespace: {{ .Release.namespace }}
+data:
+  metastore-site-xml: | 
+    <configuration>
+        <property>
+            <name>metastore.thrift.uris</name>
+            <value>thrift://detective-hive.default.svc.cluster.local:9083</value>
+            <description>Thrift URI for the remote metastore. Used by metastore client to connect to remote metastore.</description>
+        </property>
+        <property>
+            <name>metastore.task.threads.always</name>
+            <value>org.apache.hadoop.hive.metastore.events.EventCleanerTask,org.apache.hadoop.hive.metastore.MaterializationsCacheCleanerTask</value>
+        </property>
+        <property>
+            <name>metastore.expression.proxy</name>
+            <value>org.apache.hadoop.hive.metastore.DefaultPartitionExpressionProxy</value>
+        </property>
+        <property>
+            <name>javax.jdo.option.ConnectionDriverName</name>
+            <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property>
+            <name>javax.jdo.option.ConnectionURL</name>
+            <value>jdbc:mysql://detective-mariadb.default.svc.cluster.local:3306/metastore_db</value>
+        </property>
+        <property>
+            <name>javax.jdo.option.ConnectionUserName</name>
+            <value>admin</value>
+        </property>
+        <property>
+            <name>javax.jdo.option.ConnectionPassword</name>
+            <value>admin</value>
+        </property>
+    
+        <property>
+            <name>fs.s3a.impl</name>
+            <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+        </property>
+        <property>
+            <name>fs.s3a.access.key</name>
+            <value>minio_access_key</value>
+        </property>
+        <property>
+            <name>fs.s3a.secret.key</name>
+            <value>minio_secret_key</value>
+        </property>
+        <property>
+            <name>fs.s3a.endpoint</name>
+            <value>http://detective-minio.default.svc.cluster.local:9000</value>
+        </property>
+        <property>
+            <name>fs.s3a.path.style.access</name>
+            <value>true</value>
+        </property>
+    </configuration>

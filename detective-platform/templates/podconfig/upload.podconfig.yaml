@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.upload.name }}
+  namespace: {{ .Release.namespace }}
+data:
+  serviceName: {{ .Values.service.upload.name | quote }}
+  servicePort: {{ .Values.service.upload.port | quote }}

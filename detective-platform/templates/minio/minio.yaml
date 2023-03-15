@@ -1,5 +1,5 @@
-{{- $containerPort := "8080" -}}
-{{- $deploymentName := "detective-trino-coordinator" -}}
+{{- $containerPort := "9000" -}}
+{{- $deploymentName := "detective-minio" -}}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -35,24 +35,30 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ $deploymentName }}
-          image: {{ .Values.image.repository }}/trino-coordinator:{{ .Values.image.trinoCoordinator.tag | default .Chart.AppVersion }}
+          image: minio/minio:{{ .Values.image.minio.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           ports:
             - containerPort: {{ $containerPort }}
               protocol: TCP
+          command:
+          - /bin/bash
+          - -c
+          args:
+          - minio server /data --console-address :9090
           env:
-            - name: METASTORE_DB_HOSTNAME
+            - name: MINIO_ROOT_USER
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.configMap.mariadb.name }}
-                  key: serviceName
-            - name: METASTORE_DB_PORT
+                secretKeyRef:
+                  name: {{ .Values.upload.secretName }}
+                  key: accessKey
+            - name: MINIO_ROOT_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.configMap.mariadb.name }}
-                  key: servicePort
+                secretKeyRef:
+                  name: {{ .Values.upload.secretName }}
+                  key: secretKey
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -71,13 +77,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.trinoCoordinator.name }}
+  name: {{ .Values.service.minio.name }}
   labels:
-    app: {{ .Values.service.trinoCoordinator.name }}
+    app: {{ .Values.service.minio.name }}
     {{- include "detective-platform.labels" . | nindent 4 }}
 spec:
   ports:
-    - port: {{ .Values.service.trinoCoordinator.port }}
+    - port: {{ .Values.service.minio.port }}
       targetPort: {{ $containerPort }}
       protocol: TCP
   selector:

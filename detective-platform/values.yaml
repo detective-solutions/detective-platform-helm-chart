@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Enables monitoring tools like Kafdrop & DGraph Ratel
+# Enables monitoring tools like Kafdrop & DGraph Rate
 enableMonitoringTools: false
 
 email:
@@ -12,17 +12,17 @@ email:
   # MANDATORY: Email server port needs to be set when installing chart (via local-values.yaml or CLI)
   port:
   # MANDATORY: Email username needs to be set when installing chart (via local-values.yaml or CLI)
-  username:
+  username: detective
   # MANDATORY: Email password needs to be set when installing chart (via local-values.yaml or CLI)
   password:
   # MANDATORY: Email sender address needs to be set when installing chart (via local-values.yaml or CLI)
-  fromAddress:
+  fromAddress: provisioning@detective.solutions
   # MANDATORY: Email sender name needs to be set when installing chart (via local-values.yaml or CLI)
-  fromName:
+  fromName: detective
   # MANDATORY: Email template company name needs to be set when installing chart (via local-values.yaml or CLI)
-  templateCompanyName:
+  templateCompanyName: detective.solutions GmbH
   # MANDATORY: Email template company location needs to be set when installing chart (via local-values.yaml or CLI)
-  templateCompanyLocation:
+  templateCompanyLocation: Fleher Straße 32 40223 Düsseldorf
 
 ingress:
   # MANDATORY: Domain needs to be set when installing chart (via local-values.yaml or CLI)
@@ -50,18 +50,32 @@ payment:
   stripe:
     secretName: stripe-secret
     # MANDATORY: Stripe Secret needs to be set when installing chart (via local-values.yaml or CLI)
-    secret:
+    secret: sk_test_51LP6igFQtP5mX26XiMXrS43HdGL1H0OFDzDXeXvejesZrvX9NclhP9bM3qskHgAHvUQfWEgoOVg23Q4nGEYpeCIu008q8IWS6D
     # MANDATORY: Stripe Publishable Key secret needs to be set when installing chart (via local-values.yaml or CLI)
-    publishableKey:
+    publishableKey: pk_test_51LP6igFQtP5mX26XvscLF3URsvnkFTbG3AqiKsZXMfToCFZe1JxEt83AusMgQNVdkK7Tjwe3RjyAfnYGIyJmyKIA00s6nutxvP
     # MANDATORY: Stripe Webhook Secret needs to be set when installing chart (via local-values.yaml or CLI)
-    webhookSecret:
+    webhookSecret: whsec_f0de0d0e5b657b8c3893d2bfadd4227b2f7960345452cd8fcd747406f2943885
     # MANDATORY: Stripe Change Payment Portal secret needs to be set when installing chart (via local-values.yaml or CLI)
-    changePaymentPortal:
+    changePaymentPortal: https://billing.stripe.com/p/login/test_6oE7ti0AO1VwcnK5kk
+
+upload:
+  secretName: upload-secret
+  accessKey: secret
+  secretKey: secret123
+  convertApiSecret: umtWc20e89gdFxXt
+
+db:
+  mariadb:
+    secretName: mariadb-secret
+    mySqlRootPassword: admin
+    mySqlUser: admin
+    mySqlPassword: admin
+    mySqlDatabase: metastore_db
 
 image:
   # MANDATORY: Registry token needs to be set when installing chart (via local-values.yaml or CLI)
   registryToken:
-  pullSecrets: [ name: docker-registry-credentials ]
+  pullSecrets: [name: docker-registry-credentials]
   repository: quay.io/detective.solutions
   pullPolicy: IfNotPresent
   replicaCount: 2
@@ -77,6 +91,8 @@ image:
   provisioning:
     tag:
   query:
+    tag:
+  upload:
     tag:
   trinoCoordinator:
     tag:
@@ -105,6 +121,12 @@ image:
     tag: 2.4.2@sha256:babef3817535d0e81b3da5519219a49e00e02879a3ce752b08c771d2fff49d73
   stripe:
     tag: v1.13.5@sha256:9695151951ce5396b157aa7b7170ce378985786b98c1a97310ccb99fce84ee41
+  mariadb:
+    tag: 10.9.4@sha256:5834aa3731eda1ab657a3e91370895b3b6fe98b1e720c0b1167877f714345cd3
+  hive:
+    tag: latest@sha256:b44a186b6dcffafc6a72327aaa5912a5824feecb50718aaf661727ff6aef011b
+  minio:
+    tag: RELEASE.2023-01-02T09-40-09Z.fips@sha256:d8e897769b9bde54da1e3447a6e268d6161c4e5da2512b02303201a87eacb56f
 
 service:
   auth:
@@ -128,7 +150,7 @@ service:
     ingressPath: graphql
   kafdrop:
     name: detective-kafdrop-service
-    port: 9000
+    port: 9001
   kafka:
     name: detective-kafka-cluster
     fullName: detective-kafka-cluster-kafka-bootstrap
@@ -138,6 +160,10 @@ service:
     name: detective-provisioning-service
     port: 3004
     ingressPath: v1/provisioning
+  upload:
+    name: detective-upload-service
+    port: 3007
+    ingressPath: v1/upload
   ratel:
     name: detective-dgraph-ratel-service
     port: 8000
@@ -147,6 +173,16 @@ service:
   trinoCoordinator:
     name: detective-trino-coordinator-service
     port: 8083
+  mariadb:
+    name: detective-mariadb-service
+    port: 3306
+  hive:
+    name: detective-hive-service
+    port: 9083
+  minio:
+    name: detective-minio-service
+    port: 9000
+    ingressPath: v1/files
   websocketGateway:
     name: detective-websocket-gateway-service
     port: 7777
@@ -163,6 +199,16 @@ configMap:
     name: redis-podconfig
   trino:
     name: trino-podconfig
+  mariadb:
+    name: mariadb-podconfig
+  hive:
+    name: hive-podconfig
+    mount:
+      name: hive-mount-podconfig
+  minio:
+    name: minio-podconfig
+  upload:
+    name: upload-podconfig
 
 nameOverride: ""
 fullnameOverride: ""
@@ -180,10 +226,12 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -191,7 +239,8 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
