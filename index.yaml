@@ -1,0 +1,22 @@
+apiVersion: v1
+entries:
+  detective-platform:
+  - apiVersion: v2
+    appVersion: 1.0.0-beta
+    created: "2023-03-15T06:46:45.008412927Z"
+    dependencies:
+    - condition: ingress.tls.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: v1.9.1
+    - name: strimzi-kafka-operator
+      repository: https://strimzi.io/charts
+      version: 0.30.0
+    description: A Helm chart for deploying the detective platform on Kubernetes
+    digest: b8e8a2f993fe98cf17e1c561aacdd8a83cedc4bbba19d8783e3d752a9b2cd8bb
+    name: detective-platform
+    type: application
+    urls:
+    - https://github.com/detective-solutions/detective-platform-helm-chart/releases/download/detective-platform-0.0.1/detective-platform-0.0.1.tgz
+    version: 0.0.1
+generated: "2023-03-15T06:46:45.008468027Z"
