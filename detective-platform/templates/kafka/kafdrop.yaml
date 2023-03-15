@@ -1,6 +1,6 @@
 {{- if .Values.enableMonitoringTools -}}
 
-{{- $containerPort := "9000" -}}
+{{- $containerPort := "9001" -}}
 {{- $deploymentName := "kafdrop" -}}
 
 apiVersion: apps/v1
