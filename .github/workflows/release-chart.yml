@@ -28,6 +28,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: azure/setup-helm@v3
 
+      - name: Add 3rd party Helm repositories
+        run: |
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo add strimzi https://strimzi.io/charts
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
         env:
