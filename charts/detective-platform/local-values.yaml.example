@@ -14,7 +14,7 @@ email:
   templateCompanyLocation: Fleher Straße 32, 40223 Düsseldorf
 
 ingress:
-  domain: dev.detective.solutions
+  domain:
   tls:
     enabled: false
 
