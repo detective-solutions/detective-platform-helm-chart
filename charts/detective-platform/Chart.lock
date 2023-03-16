@@ -1,9 +1,12 @@
 dependencies:
+- name: ingress-nginx
+  repository: https://kubernetes.github.io/ingress-nginx
+  version: 4.5.2
 - name: cert-manager
   repository: https://charts.jetstack.io
   version: v1.9.1
 - name: strimzi-kafka-operator
   repository: https://strimzi.io/charts
   version: 0.30.0
-digest: sha256:79b9e4c19faa25e10e6c9a8db5f8cc591ff79177274db66db3cd7dcc9b83a312
-generated: "2022-11-23T19:01:45.94963841+01:00"
+digest: sha256:2f4eb3e0399d5592746e168676a87c84a8229c271eea54d6b9976b8cd5116f36
+generated: "2023-03-16T07:29:53.620159+01:00"

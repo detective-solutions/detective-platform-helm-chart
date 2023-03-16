@@ -24,6 +24,9 @@ version: 0.0.1
 appVersion: 1.0.0-beta
 
 dependencies:
+  - name: ingress-nginx
+    repository: https://kubernetes.github.io/ingress-nginx
+    version: 4.5.2
   - name: cert-manager
     version: v1.9.1
     repository: https://charts.jetstack.io
