@@ -17,6 +17,7 @@ ingress:
   domain:
   tls:
     enabled: false
+    secretName: detective-tls-cert
 
 auth:
   # Go to https://randomkeygen.com

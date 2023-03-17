@@ -32,10 +32,10 @@ ingress:
   apiPrefix: /api
   apiVersionPrefixV1: /v1
   tls:
-    enabled: true
-    issuerName: letsencrypt
-    issuerUrl: https://acme-staging-v02.api.letsencrypt.org/directory
-    secretName: tls-cert-secret
+    enabled: false
+    issuerName: lets-encrypt
+    issuerUrl: https://acme-v02.api.letsencrypt.org/directory
+    secretName: detective-tls-cert
     acmeEmail: founders@detective.solutions
 
 auth:
