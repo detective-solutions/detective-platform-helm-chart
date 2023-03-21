@@ -27,6 +27,7 @@ dependencies:
   - name: ingress-nginx
     repository: https://kubernetes.github.io/ingress-nginx
     version: 4.5.2
+    condition: ingress.tls.enabled
   - name: cert-manager
     version: v1.9.1
     repository: https://charts.jetstack.io
