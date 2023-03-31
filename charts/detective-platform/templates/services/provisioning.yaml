@@ -36,7 +36,7 @@ spec:
       containers:
         - name: {{ $deploymentName }}
           image: {{ .Values.image.repository }}/provisioning-service:{{ .Values.image.provisioning.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: Always
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           ports:

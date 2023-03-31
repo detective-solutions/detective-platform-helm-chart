@@ -35,7 +35,7 @@ spec:
       containers:
         - name: {{ $deploymentName }}
           image: {{ .Values.image.repository }}/masking-service:{{ .Values.image.masking.tag | default .Chart.AppVersion }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: Always
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
